@@ -11,13 +11,13 @@ from entities.members import MemberDto, ROLE_NOMAD
 
 load_dotenv()
 
-FIRST_TO_CONNECT_ROLE = os.getenv('first_to_connect_role_id')
-AFK_VOICE_CHANNEL     = os.getenv('afk_channel_id')
+FIRST_TO_CONNECT_ROLE = int(os.getenv('first_to_connect_role_id'))
+AFK_VOICE_CHANNEL     = int(os.getenv('afk_channel_id'))
 IGNORE_VOICE_CHANNELS = [
     AFK_VOICE_CHANNEL
 ]
-GENERAL_VOICE_CHANNEL = os.getenv('general_voice_channel')
-GENERAL_TEXT_CHANNEL  = os.getenv('general_text_channel')
+GENERAL_VOICE_CHANNEL = int(os.getenv('general_voice_channel'))
+GENERAL_TEXT_CHANNEL  = int(os.getenv('general_text_channel'))
 XP_INTERVAL           = 900
 REACTION_COOLDOWN     = 300
 
