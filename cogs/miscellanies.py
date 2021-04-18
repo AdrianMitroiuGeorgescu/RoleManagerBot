@@ -12,7 +12,7 @@ from entities.members import MemberDto
 
 load_dotenv()
 
-GODMODE_ROLE_ID = os.getenv('god_mode_role_id')
+GODMODE_ROLE_ID = int(os.getenv('god_mode_role_id'))
 
 class Miscellanies(Cog):
     def __init__(self, bot):

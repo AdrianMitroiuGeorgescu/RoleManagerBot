@@ -8,13 +8,13 @@ from repositories.membersRepository import MembersRepository
 
 load_dotenv()
 
-ROLE_NOMAD     = os.getenv('nomad')
-ROLE_TARAN     = os.getenv('taran')
-ROLE_PAHARNIC  = os.getenv('paharnic')
-ROLE_BOIER     = os.getenv('boier')
-ROLE_ISPRAVNIC = os.getenv('ispravnic')
-ROLE_VOIEVOD   = os.getenv('voievod')
-ROLE_DOMNITOR  = os.getenv('domnitor')
+ROLE_NOMAD     = int(os.getenv('nomad'))
+ROLE_TARAN     = int(os.getenv('taran'))
+ROLE_PAHARNIC  = int(os.getenv('paharnic'))
+ROLE_BOIER     = int(os.getenv('boier'))
+ROLE_ISPRAVNIC = int(os.getenv('ispravnic'))
+ROLE_VOIEVOD   = int(os.getenv('voievod'))
+ROLE_DOMNITOR  = int(os.getenv('domnitor'))
 
 ROLES = [
     ROLE_NOMAD,
