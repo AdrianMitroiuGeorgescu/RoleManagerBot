@@ -191,8 +191,10 @@ class Events(Cog):
             message = await channel.fetch_message(payload.message_id)
 
             message_send = (datetime.datetime.now() - message.created_at).seconds
-            if message_send > REACTION_COOLDOWN:
-                await message.clear_reactions()
+            print('Time in seconds since message was created')
+            print(message_send)
+            print('Check time again')
+            print(message_send)
 
             if len(message.embeds) > 0:
                 for embed in message.embeds:
