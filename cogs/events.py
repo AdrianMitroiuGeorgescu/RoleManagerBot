@@ -190,11 +190,12 @@ class Events(Cog):
             channel = self.bot.guild.get_channel(payload.channel_id)
             message = await channel.fetch_message(payload.message_id)
 
-            message_send = (datetime.datetime.now() - message.created_at).seconds
-            print('Time in seconds since message was created')
-            print(message_send)
-            print('Check time again')
-            print(message_send)
+            now          = int((datetime.datetime.now()).strftime('%S'))
+            message_send = int(message.created_at.strftime('%S'))
+
+            if now - message_send > REACTION_COOLDOWN:
+                await message.clear_reactions()
+                return
 
             if len(message.embeds) > 0:
                 for embed in message.embeds:
@@ -205,7 +206,7 @@ class Events(Cog):
                         member_id    = int(footer[1])
 
                         for reaction in message.reactions:
-                            if reaction.emoji == '❌' and payload.member.id == member_id:
+                            if reaction.emoji == '❌' and payload.member.id == member_id and reaction.count >= 2:
                                 await message.clear_reactions()
                             if reaction.emoji == '✅' and reaction.count >= votes_needed:
                                 afk_channel = self.bot.get_channel(AFK_VOICE_CHANNEL)
