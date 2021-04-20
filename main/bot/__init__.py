@@ -6,7 +6,7 @@ from glob import glob
 from discord import Embed, Intents, Forbidden
 from discord.ext import commands
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from discord.ext.commands import Context, CommandNotFound, CommandOnCooldown, MissingRequiredArgument
+from discord.ext.commands import Context, CommandNotFound, CommandOnCooldown, MissingRequiredArgument, MemberNotFound
 from dotenv import load_dotenv
 
 from entities.members import MemberDto
@@ -90,6 +90,8 @@ class Bot(commands.Bot):
                 await ctx.send('I do not have permissions to do that.')
             else:
                 raise exc.original
+        elif isinstance(exc, MemberNotFound):
+            await ctx.send(f'{exc}')
         else:
             raise exc
 
@@ -138,7 +140,7 @@ class Bot(commands.Bot):
         try:
             if ctx.command is None and ctx.guild is not None:
                 content = message.content
-                if content[0] != '!' or (len(content) > 1 and content[0] == content[1]):
+                if len(content) > 1 and content[0] != '!' and content[0] == content[1]:
                     member_dto = MemberDto()
                     member_dto.get_member(message.author.id)
                     member_dto.messages_xp += 1
