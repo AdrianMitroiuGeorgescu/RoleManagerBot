@@ -221,7 +221,7 @@ class Events(Cog):
             member_dto = MemberDto()
             member_dto.get_member(payload.user_id)
             if member_dto.emojis_xp < 1:
-                pass
+                return
             member_dto.emojis_xp += -1
             await member_dto.save(self.bot)
 
