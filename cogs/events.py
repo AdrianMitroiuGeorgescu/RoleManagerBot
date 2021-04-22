@@ -211,6 +211,9 @@ class Events(Cog):
                             if reaction.emoji == '✅' and reaction.count >= votes_needed:
                                 afk_channel = self.bot.get_channel(AFK_VOICE_CHANNEL)
                                 guild_member = self.bot.guild.get_member(member_id)
+                                if guild_member.voice is None:
+                                    await message.clear_reactions()
+                                    return
                                 await guild_member.move_to(afk_channel)
                                 await message.clear_reactions()
 
