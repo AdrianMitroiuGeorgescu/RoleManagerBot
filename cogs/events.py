@@ -231,13 +231,14 @@ class Events(Cog):
     @Cog.listener()
     async def on_member_join(self, member):
         if not member.bot:
-            member_dto = MemberDto()
+            member_dto           = MemberDto()
             member_dto.member_id = member.id
-            member = self.bot.guild.get_member(member.id)
-            await member.add_role(ROLE_NOMAD)
-            await member_dto.save(self.bot)
+            guild_member         = self.bot.guild.get_member(int(member.id))
+            role_nomad           = self.bot.guild.get_role(int(ROLE_NOMAD))
             channel = self.bot.get_channel(int(self.bot.channel))
-            await channel.send(f'{member.mention}, bun venit in Romania!')
+            await channel.send(f'{guild_member.mention}, bun venit in Romania!')
+            await guild_member.add_roles(role_nomad)
+            await member_dto.save(self.bot)
 
 
 def setup(bot):
