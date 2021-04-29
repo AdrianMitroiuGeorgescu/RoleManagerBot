@@ -138,9 +138,9 @@ class Bot(commands.Bot):
                 await self.invoke(ctx)
 
         try:
-            if ctx.command is None and ctx.guild is not None:
+            if ctx.guild is not None:
                 content = message.content
-                if len(content) > 1 and content[0] != '!' and content[0] == content[1]:
+                if len(content) > 1 and content[0] != '!' or content[0] == content[1]:
                     member_dto = MemberDto()
                     member_dto.get_member(message.author.id)
                     member_dto.messages_xp += 1
