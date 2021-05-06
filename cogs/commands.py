@@ -1,5 +1,6 @@
 import os
 import random
+from math import ceil
 from typing import Optional
 from aiohttp import request
 from discord import Member, Embed
@@ -118,9 +119,12 @@ class Commands(Cog):
         for member_found in members_found:
             members_id.append(member_found.id)
         if member.id in members_id:
-            votes_needed = int(0.4 * len(members_id))
+            votes_needed = ceil(0.4 * len(members_id))
             reactions = ['✅', '❌']
-            embed     = Embed(title=f'Kick {member.display_name}', description=f'Votes needed: {votes_needed + 2}')
+            embed     = Embed(
+                title=f'Kick {member.display_name}',
+                description=f'Votes needed: {votes_needed + 1}'
+            )
             embed.set_thumbnail(url=member.avatar_url)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed.set_footer(text=f'Jail Inmate Number: {member.id}')
