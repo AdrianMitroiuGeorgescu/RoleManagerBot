@@ -214,7 +214,7 @@ class Events(Cog):
                                 if guild_member.voice is None:
                                     await message.clear_reactions()
                                     return
-                                await guild_member.move_to(afk_channel)
+                                await guild_member.edit(voice_channel=afk_channel)
                                 await message.clear_reactions()
 
     @Cog.listener()
@@ -233,7 +233,7 @@ class Events(Cog):
         if not member.bot:
             member_dto           = MemberDto()
             member_dto.member_id = member.id
-            guild_member         = self.bot.guild.get_member(int(member.id))
+            guild_member         = self.bot.guild.get_member(int(member_dto.member_id))
             role_nomad           = self.bot.guild.get_role(int(ROLE_NOMAD))
             channel = self.bot.get_channel(int(self.bot.channel))
             await channel.send(f'{guild_member.mention}, bun venit in Romania!')
