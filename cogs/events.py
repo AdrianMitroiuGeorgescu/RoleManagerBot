@@ -84,10 +84,7 @@ class Events(Cog):
         await member_dto.save(self.bot)
 
     def run_schedules(self, scheduler):
-        config_dto = ConfigDto()
-        config_dto.name = config_dto.daily_reset
-        config_dto.get_config(config_dto)
-        scheduler.add_job(self.reset_day, CronTrigger(hour=config_dto.value,
+        scheduler.add_job(self.reset_day, CronTrigger(hour='0-23',
                                                       minute=0,
                                                       second=0,
                                                       timezone='Europe/Bucharest'))
@@ -105,19 +102,26 @@ class Events(Cog):
                                                                timezone='Europe/Bucharest'))
 
     async def reset_day(self):
-        config_dto = ConfigDto()
-        config_dto.name = config_dto.first_to_connect
+        config_dto      = ConfigDto()
+        config_dto.name = config_dto.daily_reset
+        config_dto.get_config(config_dto)
+        this_hour       = datetime.datetime.now().hour
+        if config_dto.value != this_hour:
+            return
+
+        config_dto       = ConfigDto()
+        config_dto.name  = config_dto.first_to_connect
         config_dto.get_config(config_dto)
         config_dto.value = '0'
         config_dto.save()
 
         member_dto = MemberDto()
-        filters = [('first_to_voice_channel', 1)]
+        filters    = [('first_to_voice_channel', 1)]
         member_dto.get_member_by_filters(filters)
         member_dto.first_to_voice_channel = 0
         await member_dto.save(self.bot)
         member = self.bot.guild.get_member(member_dto.member_id)
-        role = self.bot.guild.get_role(int(FIRST_TO_CONNECT_ROLE))
+        role   = self.bot.guild.get_role(int(FIRST_TO_CONNECT_ROLE))
         await member.remove_roles(role)
 
     async def steal_xp(self):
