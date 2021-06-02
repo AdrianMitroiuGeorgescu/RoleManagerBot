@@ -151,8 +151,8 @@ class Events(Cog):
         if is_move_dota_enable.value is None or not is_move_dota_enable.value:
             return
         if before.activity == after.activity \
-                or before.voice.channel is None \
-                or after.voice.channel is None:
+                or before.voice is None \
+                or after.voice is None:
             return
         if after.activity and after.activity.name.lower() in dota2:
             await bot_channel.send(f'{after.mention}, you are being move to {gaming_1_channel.mention}!')
