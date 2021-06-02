@@ -153,9 +153,9 @@ class Miscellanies(Cog):
         role_ids = []
         for role in roles:
             role_ids.append(role.id)
-        # if GODMODE_ROLE_ID not in role_ids:
-        #     await ctx.send('You do not have permission to use this command')
-        #     return
+        if GODMODE_ROLE_ID not in role_ids:
+            await ctx.send('You do not have permission to use this command')
+            return
 
         config_dto       = ConfigDto()
         config_dto.name  = name
