@@ -154,6 +154,8 @@ class Events(Cog):
                 or before.voice is None \
                 or after.voice is None:
             return
+        if before.voice.channel is gaming_1_channel:
+            return
         if after.activity and after.activity.name.lower() in dota2:
             await bot_channel.send(f'{after.mention}, you are being move to {gaming_1_channel.mention}!')
             await after.edit(voice_channel=gaming_1_channel)
