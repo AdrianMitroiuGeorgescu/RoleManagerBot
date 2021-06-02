@@ -17,6 +17,13 @@ class ConfigDto(ConfigTrait):
         self.setup_config(db_config)
         return self
 
+    def get_config_by_id(self, config_id):
+        db_config = self.repository.get_config_by_id(config_id)
+        if db_config is None:
+            return None
+        self.setup_config(db_config)
+        return self
+
     def setup_config(self, db_config):
         self.id    = db_config['id']
         self.name  = db_config['name']
@@ -24,6 +31,19 @@ class ConfigDto(ConfigTrait):
 
     def add_config(self):
         self.repository.add_config(self)
+
+    def get_configs(self):
+        db_configs = self.repository.get_configs()
+        if db_configs is None:
+            return None
+
+        configs = []
+        for db_config in db_configs:
+            config_dto = ConfigDto()
+            config_dto.setup_config(db_config)
+            configs.append(config_dto)
+
+        return configs
 
     def save(self):
         self.repository.save(self)

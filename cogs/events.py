@@ -12,14 +12,15 @@ from entities.members import MemberDto, ROLE_NOMAD
 load_dotenv()
 
 FIRST_TO_CONNECT_ROLE = int(os.getenv('first_to_connect_role_id'))
-AFK_VOICE_CHANNEL     = int(os.getenv('afk_channel_id'))
+AFK_VOICE_CHANNEL = int(os.getenv('afk_channel_id'))
 IGNORE_VOICE_CHANNELS = [
     AFK_VOICE_CHANNEL
 ]
 GENERAL_VOICE_CHANNEL = int(os.getenv('general_voice_channel'))
-GENERAL_TEXT_CHANNEL  = int(os.getenv('general_text_channel'))
-XP_INTERVAL           = 900
-REACTION_COOLDOWN     = 300
+GENERAL_TEXT_CHANNEL = int(os.getenv('general_text_channel'))
+GAMING_1_VOICE_CHANNEL = int(os.getenv('gaming_1_voice_channel'))
+XP_INTERVAL = 900
+REACTION_COOLDOWN = 300
 
 
 class Events(Cog):
@@ -102,26 +103,26 @@ class Events(Cog):
                                                                timezone='Europe/Bucharest'))
 
     async def reset_day(self):
-        config_dto      = ConfigDto()
+        config_dto = ConfigDto()
         config_dto.name = config_dto.daily_reset
         config_dto.get_config(config_dto)
-        this_hour       = datetime.datetime.now().hour
+        this_hour = datetime.datetime.now().hour
         if config_dto.value != this_hour:
             return
 
-        config_dto       = ConfigDto()
-        config_dto.name  = config_dto.first_to_connect
+        config_dto = ConfigDto()
+        config_dto.name = config_dto.first_to_connect
         config_dto.get_config(config_dto)
         config_dto.value = '0'
         config_dto.save()
 
         member_dto = MemberDto()
-        filters    = [('first_to_voice_channel', 1)]
+        filters = [('first_to_voice_channel', 1)]
         member_dto.get_member_by_filters(filters)
         member_dto.first_to_voice_channel = 0
         await member_dto.save(self.bot)
         member = self.bot.guild.get_member(member_dto.member_id)
-        role   = self.bot.guild.get_role(int(FIRST_TO_CONNECT_ROLE))
+        role = self.bot.guild.get_role(int(FIRST_TO_CONNECT_ROLE))
         await member.remove_roles(role)
 
     async def steal_xp(self):
@@ -141,7 +142,21 @@ class Events(Cog):
 
     @Cog.listener()
     async def on_member_update(self, before, after):
-        pass
+        dota2               = ["dota 2"]
+        bot_channel         = self.bot.get_channel(int(self.bot.channel))
+        gaming_1_channel    = self.bot.get_channel(GAMING_1_VOICE_CHANNEL)
+        is_move_dota_enable = ConfigDto()
+        is_move_dota_enable.get_config_by_id(int(os.getenv('move_dota_enable_id')))
+
+        if is_move_dota_enable.value is None or not is_move_dota_enable.value:
+            return
+        if before.activity == after.activity \
+                or before.voice.channel is None \
+                or after.voice.channel is None:
+            return
+        if after.activity and after.activity.name.lower() in dota2:
+            await bot_channel.send(f'{after.mention}, you are being move to {gaming_1_channel.mention}!')
+            await after.edit(voice_channel=gaming_1_channel)
 
     async def check_web_status(self):
         voice_channels = self.bot.guild.voice_channels
@@ -174,7 +189,7 @@ class Events(Cog):
     @Cog.listener()
     async def on_raw_reaction_add(self, payload):
         if not payload.member.bot:
-            member_dto        = MemberDto()
+            member_dto = MemberDto()
             member_dto.get_member(payload.member.id)
             member_extend_dto = member_dto.get_reaction_extend()
 
@@ -194,7 +209,7 @@ class Events(Cog):
             channel = self.bot.guild.get_channel(payload.channel_id)
             message = await channel.fetch_message(payload.message_id)
 
-            now          = int((datetime.datetime.now()).strftime('%S'))
+            now = int((datetime.datetime.now()).strftime('%S'))
             message_send = int(message.created_at.strftime('%S'))
 
             if now - message_send > REACTION_COOLDOWN:
@@ -204,10 +219,10 @@ class Events(Cog):
             if len(message.embeds) > 0:
                 for embed in message.embeds:
                     if 'Kick' in embed.title:
-                        description  = embed.description.split(':')
+                        description = embed.description.split(':')
                         votes_needed = int(description[1])
-                        footer       = embed.footer.text.split(':')
-                        member_id    = int(footer[1])
+                        footer = embed.footer.text.split(':')
+                        member_id = int(footer[1])
 
                         for reaction in message.reactions:
                             if reaction.emoji == '❌' and payload.member.id == member_id and reaction.count >= 2:
@@ -235,10 +250,10 @@ class Events(Cog):
     @Cog.listener()
     async def on_member_join(self, member):
         if not member.bot:
-            member_dto           = MemberDto()
+            member_dto = MemberDto()
             member_dto.member_id = member.id
-            guild_member         = self.bot.guild.get_member(int(member_dto.member_id))
-            role_nomad           = self.bot.guild.get_role(int(ROLE_NOMAD))
+            guild_member = self.bot.guild.get_member(int(member_dto.member_id))
+            role_nomad = self.bot.guild.get_role(int(ROLE_NOMAD))
             channel = self.bot.get_channel(int(self.bot.channel))
             await channel.send(f'{guild_member.mention}, bun venit in Romania!')
             await guild_member.add_roles(role_nomad)

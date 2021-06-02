@@ -1,5 +1,4 @@
 import os
-from re import split
 
 from discord import Member, Embed
 from discord.ext.commands import Cog, command
@@ -109,7 +108,7 @@ class Miscellanies(Cog):
 
     @command(name='add_config', help='Add config into configs', hidden=True)
     async def add_config(self, ctx, name, value):
-        roles = ctx.author.roles
+        roles    = ctx.author.roles
         role_ids = []
         for role in roles:
             role_ids.append(role.id)
@@ -119,9 +118,56 @@ class Miscellanies(Cog):
         config_dto = ConfigDto()
         config_dto.name  = name
         config_dto.value = value
-        config_dto.save()
+        config_dto.add_config()
 
         await ctx.send(f'{config_dto.name} config was added')
+
+    @command(name='get_configs', help='Get all configs by name and value', hidden=True)
+    async def get_config(self, ctx):
+        roles    = ctx.author.roles
+        role_ids = []
+        for role in roles:
+            role_ids.append(role.id)
+        if GODMODE_ROLE_ID not in role_ids:
+            await ctx.send('You do not have permission to use this command')
+            return
+        config_dto = ConfigDto()
+        configs    = config_dto.get_configs()
+        fields     = []
+
+        table  = ("\n".join(
+            f"***{config.name}*** *(Value: {config.value})*"
+            for idx, config in enumerate(configs)))
+        fields.append((":black_small_square:", table))
+
+        embed = Embed(title="Configs", colour=ctx.author.colour)
+        embed.set_thumbnail(url=self.bot.guild.me.avatar_url)
+        for name, value in fields:
+            embed.add_field(name=name, value=value, inline=False)
+
+        await ctx.send(embed=embed)
+
+    @command(name='edit_config', help='Edit config by name', hidden=True)
+    async def edit_config(self, ctx, name, value):
+        roles    = ctx.author.roles
+        role_ids = []
+        for role in roles:
+            role_ids.append(role.id)
+        # if GODMODE_ROLE_ID not in role_ids:
+        #     await ctx.send('You do not have permission to use this command')
+        #     return
+
+        config_dto       = ConfigDto()
+        config_dto.name  = name
+        config_dto.get_config(config_dto)
+
+        if config_dto.value is None:
+            await ctx.send(f'No config found with name {name}')
+            return
+
+        config_dto.value = value
+        config_dto.save()
+        await ctx.send(f'{config_dto.name} config has been saved. New value {config_dto.value}')
 
 
 def setup(bot):
