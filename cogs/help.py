@@ -6,13 +6,6 @@ from discord.ext.commands import Cog, command
 from discord.ext.menus import MenuPages, ListPageSource
 from discord.utils import get
 
-skip_commands = [
-    'add_member',
-    'add_level',
-    'add_all_members',
-    'add_config'
-]
-
 
 def syntax(command):
     command_names = "|".join([str(command), *command.aliases])
@@ -30,7 +23,7 @@ def syntax(command):
 class HelpMenu(ListPageSource):
     def __init__(self, ctx, data):
         self.ctx = ctx
-        super().__init__(data, per_page=5)
+        super().__init__(data, per_page=10)
 
     async def write_page(self, menu, fields=[]):
         offset   = (menu.current_page*self.per_page) + 1
@@ -42,8 +35,6 @@ class HelpMenu(ListPageSource):
         embed.set_footer(text=f'{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} commands.')
 
         for name, value in fields:
-            if str(name) in skip_commands:
-                continue
             embed.add_field(name=name, value=value, inline=False)
 
         return embed
