@@ -131,8 +131,11 @@ class Schedules(Cog):
         inactive_members = member_dto.get_inactive_members()
 
         for member in inactive_members:
-            if not self.add_retired_role(member.member_id):
+            guild_member = self.bot.guild.get_member(int(member.member_id))
+            if guild_member is None:
                 continue
+            inactive_role = self.bot.guild.get_role(RETIRE_ROLE)
+            await guild_member.add_roles(inactive_role)
 
         members = self.bot.guild.members
         for member in members:
@@ -142,16 +145,12 @@ class Schedules(Cog):
                     role_ids.append(role.id)
             if len(role_ids) > 0 or member.bot:
                 continue
-            if not self.add_retired_role(member.id):
+            guild_member = self.bot.guild.get_member(int(member.id))
+            if guild_member is None:
                 continue
-
-    def add_retired_role(self, member_id: int) -> bool:
-        guild_member  = self.bot.guild.get_member(int(member_id))
-        if guild_member is None:
-            return False
-        inactive_role = self.bot.guild.get_role(RETIRE_ROLE)
-        await guild_member.add_roles(inactive_role)
-        return True
+            inactive_role = self.bot.guild.get_role(RETIRE_ROLE)
+            await guild_member.add_roles(inactive_role)
+            return True
 
 
 def setup(bot):
