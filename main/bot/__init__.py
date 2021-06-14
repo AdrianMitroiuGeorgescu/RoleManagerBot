@@ -158,7 +158,7 @@ class Bot(commands.Bot):
 
     # events_scheduled
     async def events_scheduled(self):
-        events = self.get_cog('Events')
+        events = self.get_cog('Schedules')
         events.run_schedules(self.scheduler)
 
 

@@ -15,6 +15,7 @@ ROLE_BOIER     = int(os.getenv('boier'))
 ROLE_ISPRAVNIC = int(os.getenv('ispravnic'))
 ROLE_VOIEVOD   = int(os.getenv('voievod'))
 ROLE_DOMNITOR  = int(os.getenv('domnitor'))
+ROLE_PENSIONAR = int(os.getenv('retired_role_id'))
 
 ROLES = [
     ROLE_NOMAD,
@@ -156,6 +157,10 @@ class MemberDto:
                         continue
                     remove_role = bot.guild.get_role(int(role.id))
                     await guild_member.remove_roles(remove_role)
+
+                pensionar = bot.guild.get_role(ROLE_PENSIONAR)
+                if pensionar in roles:
+                    await guild_member.remove_roles(pensionar)
                 await guild_member.add_roles(role_to_get)
 
     def get_reaction_extend(self):
@@ -166,6 +171,20 @@ class MemberDto:
     def set_reaction_extend(self):
         member_extend_dto = MemberExtendDto()
         member_extend_dto.add_reaction_extend(self.member_id)
+
+    def get_inactive_members(self):
+        db_members = self.repository.get_inactive_members()
+
+        if db_members is None:
+            return None
+
+        inactive_members = []
+        for db_member in db_members:
+            member_dto = MemberDto()
+            member_dto.setup_member(db_member)
+            inactive_members.append(member_dto)
+
+        return inactive_members
 
 
 member = MemberDto()

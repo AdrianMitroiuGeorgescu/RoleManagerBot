@@ -95,7 +95,7 @@ class Commands(Cog):
         levels    = level_dto.get_levels()
         fields    = []
 
-        table  = ("\n".join(
+        table = ("\n".join(
             f"***{level.name}*** *(XP: {level.xp_amount})*"
             for idx, level in enumerate(levels)))
         fields.append((":black_small_square:", table))
@@ -128,7 +128,7 @@ class Commands(Cog):
             embed.set_thumbnail(url=member.avatar_url)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed.set_footer(text=f'Jail Inmate Number: {member.id}')
-            react     = await ctx.send(embed=embed)
+            react = await ctx.send(embed=embed)
             for reaction in reactions:
                 await react.add_reaction(reaction)
         else:

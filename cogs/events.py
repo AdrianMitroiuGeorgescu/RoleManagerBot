@@ -1,8 +1,6 @@
 import os
 import datetime
-import random
 
-from apscheduler.triggers.cron import CronTrigger
 from discord.ext.commands import Cog
 from dotenv import load_dotenv
 
@@ -84,62 +82,6 @@ class Events(Cog):
         member_dto.time_spent = crumbs
         await member_dto.save(self.bot)
 
-    def run_schedules(self, scheduler):
-        scheduler.add_job(self.reset_day, CronTrigger(hour='0-23',
-                                                      minute=0,
-                                                      second=0,
-                                                      timezone='Europe/Bucharest'))
-
-        # scheduler.add_job(self.steal_xp, CronTrigger(hour='8, 10, 12, 14, 16 , 18 , 20, 22 , 0',
-        #                                              minute=0,
-        #                                              second=0,
-        #                                              timezone='Europe/Bucharest'))
-
-        scheduler.add_job(self.check_web_status, CronTrigger(minute='0, 15, 30, 45',
-                                                             second=0,
-                                                             timezone='Europe/Bucharest'))
-        scheduler.add_job(self.check_share_status, CronTrigger(minute='0, 15, 30, 45',
-                                                               second=0,
-                                                               timezone='Europe/Bucharest'))
-
-    async def reset_day(self):
-        config_dto = ConfigDto()
-        config_dto.name = config_dto.daily_reset
-        config_dto.get_config(config_dto)
-        this_hour = datetime.datetime.now().hour
-        if config_dto.value != this_hour:
-            return
-
-        config_dto = ConfigDto()
-        config_dto.name = config_dto.first_to_connect
-        config_dto.get_config(config_dto)
-        config_dto.value = '0'
-        config_dto.save()
-
-        member_dto = MemberDto()
-        filters = [('first_to_voice_channel', 1)]
-        member_dto.get_member_by_filters(filters)
-        member_dto.first_to_voice_channel = 0
-        await member_dto.save(self.bot)
-        member = self.bot.guild.get_member(member_dto.member_id)
-        role = self.bot.guild.get_role(int(FIRST_TO_CONNECT_ROLE))
-        await member.remove_roles(role)
-
-    async def steal_xp(self):
-        member_dto = MemberDto()
-        member_dto.reset_heist()
-        leader_member_dto = member_dto.get_leader()
-        thieves = member_dto.get_thieves(leader_member_dto)
-        member_dto = random.choice(thieves)
-        member_dto.steal_flag = 1
-        await member_dto.save(self.bot)
-
-        channel = self.bot.get_channel(int(self.bot.channel))
-        await channel.send(f'{self.bot.get_user(member_dto.member_id).mention} '
-                           f'you have 15 seconds to steal from the leader! Use !steal')
-        await channel.send(f'{self.bot.get_user(leader_member_dto.member_id).mention} '
-                           f'you have 10 seconds to defend your xp! Use !stop_the_heist')
-
     @Cog.listener()
     async def on_member_update(self, before, after):
         dota2               = ["dota 2"]
@@ -159,34 +101,6 @@ class Events(Cog):
         if after.activity and after.activity.name.lower() in dota2:
             await bot_channel.send(f'{after.mention}, you are being move to {gaming_1_channel.mention}!')
             await after.edit(voice_channel=gaming_1_channel)
-
-    async def check_web_status(self):
-        voice_channels = self.bot.guild.voice_channels
-        members = []
-        for voice_channel in voice_channels:
-            members_found = voice_channel.members
-            for member_found in members_found:
-                members.append(member_found)
-        for member in members:
-            if member.voice.self_video:
-                member_dto = MemberDto()
-                member_dto.get_member(member.id)
-                member_dto.web_xp += 1
-                await member_dto.save(self.bot)
-
-    async def check_share_status(self):
-        voice_channels = self.bot.guild.voice_channels
-        members = []
-        for voice_channel in voice_channels:
-            members_found = voice_channel.members
-            for member_found in members_found:
-                members.append(member_found)
-        for member in members:
-            if member.voice.self_stream:
-                member_dto = MemberDto()
-                member_dto.get_member(member.id)
-                member_dto.share_xp += 1
-                await member_dto.save(self.bot)
 
     @Cog.listener()
     async def on_raw_reaction_add(self, payload):

@@ -1,3 +1,5 @@
+import datetime
+
 from main.db.db import Db
 
 
@@ -76,3 +78,8 @@ class MembersRepository(Db):
     def reset_heist(self):
         query  = 'UPDATE members SET steal_flag = %s WHERE steal_flag = %s'
         self.execute(query, 0 , 1)
+
+    def get_inactive_members(self):
+        query   = 'SELECT * FROM members m WHERE m.modified < %s'
+        results = self.records(query, datetime.datetime.now() - datetime.timedelta(30))
+        return results
