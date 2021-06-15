@@ -158,10 +158,10 @@ class MemberDto:
                     remove_role = bot.guild.get_role(int(role.id))
                     await guild_member.remove_roles(remove_role)
 
-                pensionar = bot.guild.get_role(ROLE_PENSIONAR)
-                if pensionar in roles:
-                    await guild_member.remove_roles(pensionar)
                 await guild_member.add_roles(role_to_get)
+            pensionar = bot.guild.get_role(ROLE_PENSIONAR)
+            if pensionar in roles:
+                await guild_member.remove_roles(pensionar)
 
     def get_reaction_extend(self):
         member_extend_dto = MemberExtendDto()
