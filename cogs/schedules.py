@@ -132,7 +132,7 @@ class Schedules(Cog):
 
         for member in inactive_members:
             guild_member = self.bot.guild.get_member(int(member.member_id))
-            if guild_member is None:
+            if guild_member is None or guild_member.bot:
                 continue
             inactive_role = self.bot.guild.get_role(RETIRE_ROLE)
             await guild_member.add_roles(inactive_role)
@@ -146,7 +146,7 @@ class Schedules(Cog):
             if len(role_ids) > 0 or member.bot:
                 continue
             guild_member = self.bot.guild.get_member(int(member.id))
-            if guild_member is None:
+            if guild_member is None or guild_member.bot:
                 continue
             inactive_role = self.bot.guild.get_role(RETIRE_ROLE)
             await guild_member.add_roles(inactive_role)
