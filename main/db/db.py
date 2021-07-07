@@ -42,7 +42,7 @@ class Db:
             return fetch[0]
 
     def record(self, command, *values):
-        self.execute(command, tuple(values))
+        self.execute(command, values)
         columns = self.cur.column_names
         value   = self.cur.fetchone()
         if value is None:
@@ -51,7 +51,7 @@ class Db:
         return row
 
     def records(self, command, *values):
-        self.execute(command, tuple(values))
+        self.execute(command, values)
         rows = []
         head_rows = self.cur.column_names
         remaining_rows = self.cur.fetchall()
