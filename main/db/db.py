@@ -42,24 +42,22 @@ class Db:
             return fetch[0]
 
     def record(self, command, *values):
-        self.cur.execute(command, tuple(values))
+        self.execute(command, tuple(values))
         columns = self.cur.column_names
         value   = self.cur.fetchone()
         if value is None:
             return None
         row     = dict(zip(columns, value))
-        self.close()
         return row
 
     def records(self, command, *values):
-        self.cur.execute(command, tuple(values))
+        self.execute(command, tuple(values))
         rows = []
         head_rows = self.cur.column_names
         remaining_rows = self.cur.fetchall()
 
         for row in remaining_rows:
             rows.append(dict(zip(head_rows, row)))
-        self.close()
         return rows
 
     def column(self, command, *values):
