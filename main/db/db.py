@@ -36,13 +36,15 @@ class Db:
         self.cxn.close()
 
     def field(self, command, *values):
-        self.cur.execute(command, values)
+        self.cur.execute(command, tuple(values))
+        self.commit()
 
         if (fetch := self.cur.fetchone()) is not None:
             return fetch[0]
 
     def record(self, command, *values):
-        self.execute(command, values)
+        self.cur.execute(command, tuple(values))
+        self.commit()
         columns = self.cur.column_names
         value   = self.cur.fetchone()
         if value is None:
@@ -51,7 +53,8 @@ class Db:
         return row
 
     def records(self, command, *values):
-        self.execute(command, values)
+        self.cur.execute(command, tuple(values))
+        self.commit()
         rows = []
         head_rows = self.cur.column_names
         remaining_rows = self.cur.fetchall()
@@ -61,7 +64,8 @@ class Db:
         return rows
 
     def column(self, command, *values):
-        self.cur.execute(command, values)
+        self.cur.execute(command, tuple(values))
+        self.commit()
 
         return [item[0] for item in self.cur.fetchall()]
 
