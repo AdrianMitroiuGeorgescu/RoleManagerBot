@@ -11,6 +11,7 @@ DROP_PATH  = "./data/db/drop.sql"
 BUILD_PATH = "./data/db/build.sql"
 
 
+
 class Db:
     def __init__(self):
         self.cxn = connector.connect(
@@ -26,7 +27,6 @@ class Db:
             self.scriptexec(BUILD_PATH)
 
     def commit(self):
-        self.cxn.connect()
         self.cxn.commit()
         self.close()
 
@@ -38,14 +38,12 @@ class Db:
 
     def field(self, command, *values):
         self.cur.execute(command, tuple(values))
-        self.commit()
 
         if (fetch := self.cur.fetchone()) is not None:
             return fetch[0]
 
     def record(self, command, *values):
         self.cur.execute(command, tuple(values))
-        self.commit()
         columns = self.cur.column_names
         value   = self.cur.fetchone()
         if value is None:
@@ -55,7 +53,6 @@ class Db:
 
     def records(self, command, *values):
         self.cur.execute(command, tuple(values))
-        self.commit()
         rows = []
         head_rows = self.cur.column_names
         remaining_rows = self.cur.fetchall()
@@ -66,7 +63,6 @@ class Db:
 
     def column(self, command, *values):
         self.cur.execute(command, tuple(values))
-        self.commit()
 
         return [item[0] for item in self.cur.fetchall()]
 
