@@ -48,6 +48,7 @@ class Db:
         if value is None:
             return None
         row     = dict(zip(columns, value))
+        self.close()
         return row
 
     def records(self, command, *values):
@@ -58,6 +59,7 @@ class Db:
 
         for row in remaining_rows:
             rows.append(dict(zip(head_rows, row)))
+        self.close()
         return rows
 
     def column(self, command, *values):

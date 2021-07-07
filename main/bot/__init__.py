@@ -61,7 +61,7 @@ class Bot(commands.Bot):
         with open("./lib/bot/bot.token", "r", encoding="utf-8") as bt:
             self.token = bt.read()
         print("Running...")
-        super().run(self.token, reconnect=True)
+        super().run(self.token, reconnect=False)
 
     # connect
     async def on_connect(self):
@@ -140,11 +140,12 @@ class Bot(commands.Bot):
         try:
             if ctx.guild is not None:
                 content = message.content
-                if len(content) > 1 and content[0] != '!' or content[0] == content[1]:
-                    member_dto = MemberDto()
-                    member_dto.get_member(message.author.id)
-                    member_dto.messages_xp += 1
-                    await member_dto.save(self)
+                if len(content) > 1:
+                    if content[0] != '!' or content[0] == content[1]:
+                        member_dto = MemberDto()
+                        member_dto.get_member(message.author.id)
+                        member_dto.messages_xp += 1
+                        await member_dto.save(self)
         except Exception as e:
             print(f'Timestamp: {datetime.now()}')
             print(f'Exception type: {type(e)}')
