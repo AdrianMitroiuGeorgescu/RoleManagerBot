@@ -8,6 +8,7 @@ from discord.ext import commands
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord.ext.commands import Context, CommandNotFound, CommandOnCooldown, MissingRequiredArgument, MemberNotFound
 from dotenv import load_dotenv
+from mysql.connector import DatabaseError
 
 from entities.members import MemberDto
 from main.bot.readyCogs import Ready
@@ -92,6 +93,13 @@ class Bot(commands.Bot):
                 raise exc.original
         elif isinstance(exc, MemberNotFound):
             await ctx.send(f'{exc}')
+        elif isinstance(exc, DatabaseError):
+            os.system('sudo service mysqld restart')
+            print(f'Timestamp: {datetime.now()}')
+            print(f'Exception type: {type(exc)}')
+            print(f'Message: Mysql connections restarted')
+            print(f'Exception: {exc}\n')
+            await ctx.send(f'Db error occurred. Try again!')
         else:
             raise exc
 
