@@ -36,7 +36,7 @@ class Db:
         self.cxn.close()
 
     def field(self, command, *values):
-        self.cur.execute(command, tuple(values))
+        self.cur.execute(command, values)
 
         if (fetch := self.cur.fetchone()) is not None:
             return fetch[0]
@@ -61,7 +61,7 @@ class Db:
         return rows
 
     def column(self, command, *values):
-        self.cur.execute(command, tuple(values))
+        self.cur.execute(command, values)
 
         return [item[0] for item in self.cur.fetchall()]
 
