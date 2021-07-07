@@ -26,6 +26,7 @@ class Db:
             self.scriptexec(BUILD_PATH)
 
     def commit(self):
+        self.cxn.connect()
         self.cxn.commit()
         self.close()
 
