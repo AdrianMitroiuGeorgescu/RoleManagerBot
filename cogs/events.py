@@ -1,5 +1,6 @@
 import os
 import datetime
+from time import sleep
 
 from discord.ext.commands import Cog
 from dotenv import load_dotenv
@@ -43,10 +44,10 @@ class Events(Cog):
         try:
             if (before.channel is None or (before.channel is not None and before.channel.id in IGNORE_VOICE_CHANNELS)) \
                     and (after.channel is not None and after.channel.id not in IGNORE_VOICE_CHANNELS):
-                await self.check_first_to_connect(channel, config_dto, member, member_dto)
 
                 member_dto.joined_voice = datetime.datetime.now()
                 await member_dto.save(self.bot)
+                await self.check_first_to_connect(channel, config_dto, member, member_dto)
 
             if (before.channel is not None and before.channel.id not in IGNORE_VOICE_CHANNELS) \
                     and (after.channel is None or after.channel.id in IGNORE_VOICE_CHANNELS):
@@ -59,6 +60,10 @@ class Events(Cog):
 
     async def check_first_to_connect(self, channel, config_dto, member, member_dto):
         if not config_dto.value:
+            sleep(60)
+            if member.voice.channel is None or (member.voice.channel is not None and member.voice.channel.id in IGNORE_VOICE_CHANNELS):
+                return
+
             member_dto.xp += 10
             member_dto.first_to_voice_channel = 1
             config_dto.value = 1
