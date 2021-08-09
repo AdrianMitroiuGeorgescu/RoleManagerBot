@@ -8,6 +8,7 @@ class ConfigDto(ConfigTrait):
         self.id         = None
         self.name       = None
         self.value      = None
+        self.modified   = None
         self.repository = ConfigRepository()
 
     def get_config(self, config_dto):
@@ -25,9 +26,10 @@ class ConfigDto(ConfigTrait):
         return self
 
     def setup_config(self, db_config):
-        self.id    = db_config['id']
-        self.name  = db_config['name']
-        self.value = db_config['value']
+        self.id       = db_config['id']
+        self.name     = db_config['name']
+        self.value    = db_config['value']
+        self.modified = db_config['modified']
 
     def add_config(self):
         self.repository.add_config(self)

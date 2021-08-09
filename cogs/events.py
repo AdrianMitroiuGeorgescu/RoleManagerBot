@@ -1,6 +1,6 @@
 import os
 import datetime
-from time import sleep
+from time import sleep, time
 
 from discord.ext.commands import Cog
 from dotenv import load_dotenv
@@ -20,6 +20,7 @@ GENERAL_TEXT_CHANNEL = int(os.getenv('general_text_channel'))
 GAMING_1_VOICE_CHANNEL = int(os.getenv('gaming_1_voice_channel'))
 XP_INTERVAL = 900
 REACTION_COOLDOWN = 300
+TIME_TO_VALIDATE_FLAG = 900
 
 
 class Events(Cog):
@@ -52,6 +53,9 @@ class Events(Cog):
             if (before.channel is not None and before.channel.id not in IGNORE_VOICE_CHANNELS) \
                     and (after.channel is None or after.channel.id in IGNORE_VOICE_CHANNELS):
                 await self.calculate_voice_time(member_dto)
+                hit_and_runner = await self.check_hit_and_runner(member_dto.member_id)
+                if hit_and_runner:
+                    await channel.send(f'{member.mention} tried to hit and run. Award is still available!')
         except Exception as e:
             print(f'Timestamp: {datetime.datetime.now()}')
             print(f'Exception type: {type(e)}')
@@ -60,10 +64,6 @@ class Events(Cog):
 
     async def check_first_to_connect(self, channel, config_dto, member, member_dto):
         if not config_dto.value:
-            sleep(60)
-            if member.voice.channel is None or (member.voice.channel is not None and member.voice.channel.id in IGNORE_VOICE_CHANNELS):
-                return
-
             member_dto.xp += 10
             member_dto.first_to_voice_channel = 1
             config_dto.value = 1
@@ -83,7 +83,6 @@ class Events(Cog):
         crumbs = member_dto.time_spent - (xp * XP_INTERVAL)
         member_dto.xp += xp
         member_dto.joined_voice = None
-        member_dto.left_voice = None
         member_dto.time_spent = crumbs
         await member_dto.save(self.bot)
 
@@ -179,6 +178,29 @@ class Events(Cog):
             await channel.send(f'{guild_member.mention}, bun venit in Romania!')
             await guild_member.add_roles(role_nomad)
             await member_dto.save(self.bot)
+
+    async def check_hit_and_runner(self, member_id: int):
+        config_dto      = ConfigDto()
+        config_dto.name = config_dto.first_to_connect
+        config_dto.get_config(config_dto)
+
+        member_dto = MemberDto()
+        member_dto.get_member(member_id)
+
+        last_modified = datetime.datetime.timestamp(config_dto.modified)
+        member_left   = datetime.datetime.timestamp(member_dto.left_voice)
+
+        if member_left - last_modified < TIME_TO_VALIDATE_FLAG:
+            member_dto.first_to_voice_channel = 0
+            member_dto.xp += -10
+            config_dto.value = 0
+            config_dto.save()
+            role   = self.bot.guild.get_role(int(FIRST_TO_CONNECT_ROLE))
+            member = self.bot.guild.get_member(int(member_dto.member_id))
+            await member.remove_roles(role)
+            await member_dto.save(self.bot)
+            return True
+        return False
 
 
 def setup(bot):
