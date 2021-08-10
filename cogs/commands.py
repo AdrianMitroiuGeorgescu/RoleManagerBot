@@ -20,7 +20,7 @@ class Commands(Cog):
         if not self.bot.ready:
             self.bot.cogs_ready.ready_up(os.path.basename(__file__))
 
-    @command(name='about', help='Useful information about something. Cooldown: 10s')
+    @command(name='about', help='Useful information about something dasda das . Cooldown: 10s')
     @cooldown(1, 10, BucketType.user)
     async def about(self, ctx, message: Optional[str] = None):
         about_dto = AboutDto()
