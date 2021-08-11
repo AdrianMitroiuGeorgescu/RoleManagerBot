@@ -134,11 +134,11 @@ class Commands(Cog):
         else:
             await ctx.send('You must be in the same voice channel as the member you want to kick!')
     @command(name='barbut', pass_context=True)
-    async def barbut(self, ctx, member: Member):
+    async def barbut(self, ctx, member: Member, stake_is:int):
         reactions = ['✅', '❌']
         embed     = Embed(
             title=f'Joci barbut, {member.display_name}?',
-            description=f'Miza este de: <<miza>>'
+            description=f'Miza este de: {stake_is}'
         )
         embed.set_thumbnail(url=member.avatar_url)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
