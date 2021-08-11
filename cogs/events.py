@@ -1,5 +1,6 @@
 import os
 import datetime
+import random
 from time import sleep, time
 
 from discord.ext.commands import Cog
@@ -217,7 +218,8 @@ class Events(Cog):
         for reaction in message.reactions:
             if reaction.emoji == '❌' and payload.member.id in [player_one, player_two]:
                 await message.clear_reactions()
-            if reaction.emoji == '✅' and payload.member.id in [player_one, player_two]:
+            if reaction.emoji == '🎲' and payload.member.id in [player_one, player_two]:
+                random.randrange(1,100)
                 await message.clear_reactions()
 
 
