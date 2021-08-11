@@ -45,7 +45,7 @@ class Bot(commands.Bot):
             intents=Intents.all()
         )
 
-    # setup
+    # setupp
     def setup(self):
         print(COGS)
         for cog in COGS:
