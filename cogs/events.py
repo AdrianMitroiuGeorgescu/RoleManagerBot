@@ -140,7 +140,7 @@ class Events(Cog):
                 for embed in message.embeds:
                     if 'Kick' in embed.title:
                         await self.check_kick_command(embed=embed, message=message, payload=payload)
-                    elif 'Barbut' in embed.title:
+                    elif 'barbut' in embed.title:
                         await self.check_barbut_command(embed=embed, message=message, payload=payload)
 
     @Cog.listener()
@@ -208,16 +208,16 @@ class Events(Cog):
                 await message.clear_reactions()
 
     async def check_barbut_command(self, embed, message, payload):
-        player_one   = message.author.name
         description = embed.description.split(':')
         stake_is    = int(description[1])
         footer      = embed.footer.text.split(':')
-        player_two  = int(footer[1])
+        player_one  = int(footer[2])
+        player_two  = int(footer[5])
 
         for reaction in message.reactions:
-            if reaction.emoji == '❌' and payload.member.id == player_two:
+            if reaction.emoji == '❌' and payload.member.id in [player_one, player_two]:
                 await message.clear_reactions()
-            if reaction.emoji == '✅' and payload.member.id == player_two:
+            if reaction.emoji == '✅' and payload.member.id in [player_one, player_two]:
                 await message.clear_reactions()
 
 
