@@ -133,7 +133,18 @@ class Commands(Cog):
                 await react.add_reaction(reaction)
         else:
             await ctx.send('You must be in the same voice channel as the member you want to kick!')
-
+    @command(name='barbut', pass_context=True)
+    async def barbut(self, ctx, member: Member):
+        reactions = ['✅', '❌']
+        embed     = Embed(
+            title=f'Joci barbut, {member.display_name}?',
+            description=f'Miza este de: <<miza>>'
+        )
+        embed.set_thumbnail(url=member.avatar_url)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        react = await ctx.send(embed=embed)
+        for reaction in reactions:
+            await react.add_reaction(reaction)
 
 def setup(bot):
     bot.add_cog(Commands(bot))
