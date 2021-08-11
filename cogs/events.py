@@ -220,5 +220,6 @@ class Events(Cog):
             if reaction.emoji == '✅' and payload.member.id == player_two:
                 await message.clear_reactions()
 
+
 def setup(bot):
     bot.add_cog(Events(bot))

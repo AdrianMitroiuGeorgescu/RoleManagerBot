@@ -133,6 +133,7 @@ class Commands(Cog):
                 await react.add_reaction(reaction)
         else:
             await ctx.send('You must be in the same voice channel as the member you want to kick!')
+
     @command(name='barbut', pass_context=True)
     async def barbut(self, ctx, member: Member):
         reactions = ['✅', '❌']
