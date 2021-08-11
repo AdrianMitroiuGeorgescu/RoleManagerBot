@@ -139,22 +139,9 @@ class Events(Cog):
             if len(message.embeds) > 0:
                 for embed in message.embeds:
                     if 'Kick' in embed.title:
-                        description = embed.description.split(':')
-                        votes_needed = int(description[1])
-                        footer = embed.footer.text.split(':')
-                        member_id = int(footer[1])
-
-                        for reaction in message.reactions:
-                            if reaction.emoji == '❌' and payload.member.id == member_id and reaction.count >= 2:
-                                await message.clear_reactions()
-                            if reaction.emoji == '✅' and reaction.count >= votes_needed:
-                                afk_channel = self.bot.get_channel(AFK_VOICE_CHANNEL)
-                                guild_member = self.bot.guild.get_member(member_id)
-                                if guild_member.voice is None:
-                                    await message.clear_reactions()
-                                    return
-                                await guild_member.edit(voice_channel=afk_channel)
-                                await message.clear_reactions()
+                        self.check_kick_command(embed=embed, message=message, payload=payload)
+                    elif 'Barbut' in embed.title:
+                        self.check_barbut_command(embed=embed, message=message, payload=payload)               
 
     @Cog.listener()
     async def on_raw_reaction_remove(self, payload):
@@ -202,6 +189,36 @@ class Events(Cog):
             return True
         return False
 
+    async def check_kick_command(self, embed, message, payload):
+        description = embed.description.split(':')
+        votes_needed = int(description[1])
+        footer = embed.footer.text.split(':')
+        member_id = int(footer[1])
+
+        for reaction in message.reactions:
+            if reaction.emoji == '❌' and payload.member.id == member_id and reaction.count >= 2:
+                await message.clear_reactions()
+            if reaction.emoji == '✅' and reaction.count >= votes_needed:
+                afk_channel = self.bot.get_channel(AFK_VOICE_CHANNEL)
+                guild_member = self.bot.guild.get_member(member_id)
+                if guild_member.voice is None:
+                    await message.clear_reactions()
+                    return
+                await guild_member.edit(voice_channel=afk_channel)
+                await message.clear_reactions()
+
+    async def check_barbut_command(self, embed, message, payload):
+        player_one   = message.author.name
+        description = embed.description.split(':')
+        stake_is    = int(description[1])
+        footer      = embed.footer.text.split(':')
+        player_two  = int(footer[1])
+
+        for reaction in message.reactions:
+            if reaction.emoji == '❌' and payload.member.id == player_two:
+                await message.clear_reactions()
+            if reaction.emoji == '✅' and payload.member.id == player_two:
+                await message.clear_reactions()
 
 def setup(bot):
     bot.add_cog(Events(bot))
