@@ -78,7 +78,7 @@ class Bot(commands.Bot):
             await args[0].send("Something went wrong.")
         raise
 
-    # command_error
+    # command_errorr
     async def on_command_error(self, ctx, exc):
         if isinstance(exc, CommandNotFound):
             await ctx.send('This command I do not know')
