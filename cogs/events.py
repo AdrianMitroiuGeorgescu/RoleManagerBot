@@ -139,9 +139,9 @@ class Events(Cog):
             if len(message.embeds) > 0:
                 for embed in message.embeds:
                     if 'Kick' in embed.title:
-                        self.check_kick_command(embed=embed, message=message, payload=payload)
+                        await self.check_kick_command(embed=embed, message=message, payload=payload)
                     elif 'Barbut' in embed.title:
-                        self.check_barbut_command(embed=embed, message=message, payload=payload)               
+                        await self.check_barbut_command(embed=embed, message=message, payload=payload)
 
     @Cog.listener()
     async def on_raw_reaction_remove(self, payload):
