@@ -53,7 +53,7 @@ class Bot(commands.Bot):
             print(f"{cog} cog loaded")
         print("Setup complete")
 
-    # run
+    # runp
     def run(self, version):
         self.version = version
         print("Setup starts...")
