@@ -146,7 +146,7 @@ class Commands(Cog):
         )
         embed.set_thumbnail(url=member.avatar_url)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-        embed.set_footer(text=f':Player one: {ctx.author.id}:\n '
+        embed.set_footer(text=f':Player one: {ctx.author.id}:\n'
                               f':Player two: {member.id}:')
         react = await ctx.send(embed=embed)
         for reaction in reactions:

@@ -191,16 +191,16 @@ class Events(Cog):
         return False
 
     async def check_kick_command(self, embed, message, payload):
-        description = embed.description.split(':')
+        description  = embed.description.split(':')
         votes_needed = int(description[1])
-        footer = embed.footer.text.split(':')
-        member_id = int(footer[1])
+        footer       = embed.footer.text.split(':')
+        member_id    = int(footer[1])
 
         for reaction in message.reactions:
             if reaction.emoji == '❌' and payload.member.id == member_id and reaction.count >= 2:
                 await message.clear_reactions()
             if reaction.emoji == '✅' and reaction.count >= votes_needed:
-                afk_channel = self.bot.get_channel(AFK_VOICE_CHANNEL)
+                afk_channel  = self.bot.get_channel(AFK_VOICE_CHANNEL)
                 guild_member = self.bot.guild.get_member(member_id)
                 if guild_member.voice is None:
                     await message.clear_reactions()
@@ -216,11 +216,17 @@ class Events(Cog):
         player_two  = int(footer[5])
 
         for reaction in message.reactions:
-            if reaction.emoji == '❌' and payload.member.id in [player_one, player_two]:
+            if reaction.emoji == '❌' and payload.member.id in [player_one, player_two] and reaction.count >= 2:
                 await message.clear_reactions()
             if reaction.emoji == '🎲' and payload.member.id in [player_one, player_two]:
-                random.randrange(1,100)
-                await message.clear_reactions()
+                discord_member = self.bot.guild.get_member(payload.member.id)
+                roll           = random.randrange(1, 100)
+                embed.add_field(name=f'{discord_member.display_name}', value=roll, inline=True)
+                await message.edit(embed=embed)
+                channel        = self.bot.guild.get_channel(payload.channel_id)
+                message_edited = await channel.fetch_message(payload.message_id)
+                for reacts in message.reactions:
+                    await message_edited.add_reaction(reacts)
 
 
 def setup(bot):
