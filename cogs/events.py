@@ -214,20 +214,35 @@ class Events(Cog):
         footer      = embed.footer.text.split(':')
         player_one  = int(footer[2])
         player_two  = int(footer[5])
+        allready_rolled = []
+        player_name = None
+        player_value = None
 
-        for reaction in message.reactions:
-            if reaction.emoji == '❌' and payload.member.id in [player_one, player_two] and reaction.count >= 2:
-                await message.clear_reactions()
-            if reaction.emoji == '🎲' and payload.member.id in [player_one, player_two]:
-                discord_member = self.bot.guild.get_member(payload.member.id)
-                roll           = random.randrange(1, 100)
-                embed.add_field(name=f'{discord_member.display_name}', value=roll, inline=True)
+        if embed.fields:
+            for field in embed.fields:
+                allready_rolled.append(field.name)
+                player_name = field.name
+                player_value = int(field.value)
+
+        if payload.emoji.name == '❌' and payload.member.id in [player_one, player_two]:
+            await message.clear_reactions()
+
+        if payload.emoji.name == '🎲' and payload.member.id in [player_one, player_two] and payload.member.display_name not in allready_rolled:
+            discord_member = self.bot.guild.get_member(payload.member.id)
+            roll = random.randrange(1, 100)
+            embed.add_field(name=f'{discord_member.display_name}', value=roll, inline=True)
+            await message.edit(embed=embed)
+            if 1 <= len(allready_rolled):
+                if player_value > roll:
+                    embed.add_field(name=f':crown: Câștigătorul este {player_name}', value=f'A câștigat {stake_is} XP', inline=False)
+                elif player_value < roll:
+                    embed.add_field(name=f':crown: Câștigătorul este {payload.member.display_name}', value=f'A câștigat {stake_is} XP', inline=False)
+                elif player_value == roll:
+                    embed.add_field(name=':crown: Egalitate', value='Nimeni nu a câștigat', inline=False)
+                #mi-as pula in ea db, cum scad eu xp? si adaug
                 await message.edit(embed=embed)
-                channel        = self.bot.guild.get_channel(payload.channel_id)
-                message_edited = await channel.fetch_message(payload.message_id)
-                for reacts in message.reactions:
-                    await message_edited.add_reaction(reacts)
-
+                await message.clear_reactions()
+            return
 
 def setup(bot):
     bot.add_cog(Events(bot))
