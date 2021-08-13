@@ -61,11 +61,13 @@ class Events(Cog):
             print(f'Exception type: {type(e)}')
             print(f'Arguments: {e.args}')
             print(f'Exception: {e}')
+            print(f'Member id: {member.id}')
 
     async def check_first_to_connect(self, channel, config_dto, member, member_dto):
         if not config_dto.value:
             member_dto.xp += 10
             member_dto.first_to_voice_channel = 1
+            member_dto.save(self.bot)
             config_dto.value = 1
             config_dto.save()
             role = self.bot.guild.get_role(int(FIRST_TO_CONNECT_ROLE))
