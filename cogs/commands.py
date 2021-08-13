@@ -134,24 +134,6 @@ class Commands(Cog):
         else:
             await ctx.send('You must be in the same voice channel as the member you want to kick!')
 
-    @command(name='barbut', pass_context=True)
-    async def barbut(self, ctx, member: Member, stake_is:int):
-        if ctx.author.id == member.id:
-            await ctx.send('Jocul ăsta se joacă în doi!')
-            return
-        reactions = ['🎲', '❌']
-        embed     = Embed(
-            title=f'Joci barbut, {member.display_name}?',
-            description=f'Miza este de: {stake_is}'
-        )
-        embed.set_thumbnail(url=member.avatar_url)
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-        embed.set_footer(text=f':Player one: {ctx.author.id}:\n'
-                              f':Player two: {member.id}:')
-        react = await ctx.send(embed=embed)
-        for reaction in reactions:
-            await react.add_reaction(reaction)
-
 
 def setup(bot):
     bot.add_cog(Commands(bot))
