@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 from discord import Member, Embed
@@ -46,6 +47,15 @@ class Games(Cog):
         react = await ctx.send(embed=embed)
         for reaction in reactions:
             await react.add_reaction(reaction)
+
+        def check(reaction, user):
+            return user == ctx.author and str(reaction.emoji) == '✅'
+
+        try:
+            await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
+        except asyncio.TimeoutError:
+            await ctx.send('Mmebrul x nu a acceptat sa se joace')
+
 
 def setup(bot):
     bot.add_cog(Games(bot))

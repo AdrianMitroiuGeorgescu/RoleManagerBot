@@ -36,7 +36,8 @@ class EventsServices:
         if payload.member.id == player_one:
             last_player_id = player_two
 
-        if payload.emoji.name == '🎲' and payload.member.id in [player_one, player_two] and payload.member.display_name not in allready_rolled:
+        if payload.emoji.name == '🎲' and payload.member.id in [player_one,
+                                                                player_two] and payload.member.display_name not in allready_rolled:
             discord_member = bot.guild.get_member(payload.member.id)
             roll = random.randrange(1, 100)
             embed.add_field(name=f'{discord_member.display_name}', value=roll, inline=True)
