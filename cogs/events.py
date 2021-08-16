@@ -67,7 +67,7 @@ class Events(Cog):
         if not config_dto.value:
             member_dto.xp += 10
             member_dto.first_to_voice_channel = 1
-            member_dto.save(self.bot)
+            await member_dto.save(self.bot)
             config_dto.value = 1
             config_dto.save()
             role = self.bot.guild.get_role(int(FIRST_TO_CONNECT_ROLE))
