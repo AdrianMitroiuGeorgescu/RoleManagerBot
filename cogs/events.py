@@ -47,8 +47,8 @@ class Events(Cog):
                     and (after.channel is not None and after.channel.id not in IGNORE_VOICE_CHANNELS):
 
                 member_dto.joined_voice = datetime.datetime.now()
+                member_dto = await self.check_first_to_connect(channel, config_dto, member, member_dto)
                 await member_dto.save(self.bot)
-                await self.check_first_to_connect(channel, config_dto, member, member_dto)
 
             if (before.channel is not None and before.channel.id not in IGNORE_VOICE_CHANNELS) \
                     and (after.channel is None or after.channel.id in IGNORE_VOICE_CHANNELS):
@@ -67,7 +67,6 @@ class Events(Cog):
         if not config_dto.value:
             member_dto.xp += 10
             member_dto.first_to_voice_channel = 1
-            await member_dto.save(self.bot)
             config_dto.value = 1
             config_dto.save()
             role = self.bot.guild.get_role(int(FIRST_TO_CONNECT_ROLE))
@@ -75,6 +74,7 @@ class Events(Cog):
             await channel.send(f'{member.mention}'
                                f' because you were the first one to connect in voice channel,'
                                f' you got an award')
+        return member_dto
 
     async def calculate_voice_time(self, member_dto):
         member_dto.left_voice = datetime.datetime.now()
