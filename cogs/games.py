@@ -19,7 +19,7 @@ class Games(Cog):
         if not self.bot.ready:
             self.bot.cogs_ready.ready_up(os.path.basename(__file__))
 
-    @command(name='barbut', pass_context=True, help='Poți juca barbu cu un membru la alegere')
+    @command(name='barbut', pass_context=True, help='Poți juca barbut cu un membru la alegere')
     async def barbut(self, ctx, member: Member, stake_is: int):
 
         challenger_member = MemberDto()
