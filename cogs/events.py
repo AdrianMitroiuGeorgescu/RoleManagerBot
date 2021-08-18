@@ -90,9 +90,9 @@ class Events(Cog):
 
     @Cog.listener()
     async def on_member_update(self, before, after):
-        dota2 = ["dota 2"]
-        bot_channel = self.bot.get_channel(int(self.bot.channel))
-        gaming_1_channel = self.bot.get_channel(GAMING_1_VOICE_CHANNEL)
+        dota2               = ["dota 2"]
+        bot_channel         = self.bot.get_channel(int(self.bot.channel))
+        gaming_1_channel    = self.bot.get_channel(GAMING_1_VOICE_CHANNEL)
         is_move_dota_enable = ConfigDto()
         is_move_dota_enable.get_config_by_id(int(os.getenv('move_dota_enable_id')))
 
@@ -159,17 +159,17 @@ class Events(Cog):
     @Cog.listener()
     async def on_member_join(self, member):
         if not member.bot:
-            member_dto = MemberDto()
+            member_dto           = MemberDto()
             member_dto.member_id = member.id
-            guild_member = self.bot.guild.get_member(int(member_dto.member_id))
-            role_nomad = self.bot.guild.get_role(int(ROLE_NOMAD))
-            channel = self.bot.get_channel(int(self.bot.channel))
+            guild_member         = self.bot.guild.get_member(int(member_dto.member_id))
+            role_nomad           = self.bot.guild.get_role(int(ROLE_NOMAD))
+            channel              = self.bot.get_channel(int(self.bot.channel))
             await channel.send(f'{guild_member.mention}, bun venit in Romania!')
             await guild_member.add_roles(role_nomad)
             await member_dto.save(self.bot)
 
     async def check_hit_and_runner(self, member_id: int):
-        config_dto = ConfigDto()
+        config_dto      = ConfigDto()
         config_dto.name = config_dto.first_to_connect
         config_dto.get_config(config_dto)
 
@@ -177,7 +177,7 @@ class Events(Cog):
         member_dto.get_member(member_id)
 
         last_modified = datetime.datetime.timestamp(config_dto.modified)
-        member_left = datetime.datetime.timestamp(member_dto.left_voice)
+        member_left   = datetime.datetime.timestamp(member_dto.left_voice)
 
         if member_left - last_modified < TIME_TO_VALIDATE_FLAG:
             member_dto.first_to_voice_channel = 0
@@ -192,17 +192,19 @@ class Events(Cog):
         return False
 
     async def check_kick_command(self, embed, message, payload):
-        description = embed.description.split(':')
+        description  = embed.description.split(':')
         votes_needed = int(description[1])
-        footer = embed.footer.text.split(':')
-        member_id = int(footer[1])
+        footer       = embed.footer.text.split(':')
+        member_id    = int(footer[1])
 
         for reaction in message.reactions:
             if reaction.emoji == '❌' and payload.member.id == member_id and reaction.count >= 2:
                 await message.clear_reactions()
+
             if reaction.emoji == '✅' and reaction.count >= votes_needed:
-                afk_channel = self.bot.get_channel(AFK_VOICE_CHANNEL)
+                afk_channel  = self.bot.get_channel(AFK_VOICE_CHANNEL)
                 guild_member = self.bot.guild.get_member(member_id)
+
                 if guild_member.voice is None:
                     await message.clear_reactions()
                     return

@@ -50,11 +50,9 @@ class Games(Cog):
 
         def check(reaction, user):
             return user == member and str(reaction.emoji) == '✅'
-
         try:
             await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
         except asyncio.TimeoutError:
-
             embed.add_field(name=f'{member.display_name}', value='Nu a acceptat invitația', inline=True)
             embed.set_footer(text="")
 

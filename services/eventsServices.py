@@ -33,7 +33,6 @@ async def check_barbut_command(bot, embed, message, payload):
         # timer
         def check(reaction, user):
             return user in [payload.member, to_roll_player] and str(reaction.emoji) == '🎲'
-
         try:
             await bot.wait_for('reaction_add', timeout=30.0, check=check)
         except asyncio.TimeoutError:
@@ -77,7 +76,6 @@ async def check_barbut_command(bot, embed, message, payload):
 
             def check(reaction, user):
                 return user == to_roll_player and str(reaction.emoji) == '🎲'
-
             try:
                 await bot.wait_for('reaction_add', timeout=30.0, check=check)
             except asyncio.TimeoutError:
@@ -90,7 +88,6 @@ async def check_barbut_command(bot, embed, message, payload):
         embed.set_footer(text="")
         await message.edit(embed=embed)
         await message.clear_reactions()
-
         return
 
 
