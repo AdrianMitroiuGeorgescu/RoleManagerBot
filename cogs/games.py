@@ -40,7 +40,7 @@ class Games(Cog):
             title=f'Joci barbut, {member.display_name}?',
             description=f'Miza este de: {stake_is}'
         )
-        embed.set_thumbnail(url=member.avatar_url)
+        embed.set_thumbnail(url='https://i.ibb.co/9hrZBnc/Untitled.jpg')
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.set_footer(text=f':Player one: {ctx.author.id}:\n'
                               f':Player two: {member.id}:')
@@ -49,12 +49,17 @@ class Games(Cog):
             await react.add_reaction(reaction)
 
         def check(reaction, user):
-            return user == ctx.author and str(reaction.emoji) == '✅'
+            return user == member and str(reaction.emoji) == '✅'
 
         try:
-            await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
+            await self.bot.wait_for('reaction_add', timeout=20.0, check=check)
         except asyncio.TimeoutError:
-            await ctx.send('Mmebrul x nu a acceptat sa se joace')
+
+            embed.add_field(name=f'{member.display_name}', value='Nu a acceptat invitația', inline=True)
+            embed.set_footer(text="")
+
+            await react.edit(embed=embed)
+            await react.clear_reactions()
 
 
 def setup(bot):
