@@ -50,8 +50,9 @@ async def check_barbut_command(bot, embed, message, payload):
             player_name = field.name
             rolled_first_value = int(field.value)
 
-    if payload.emoji.name == '🎲' and payload.member.id in [player_one,
-                                                            player_two] and payload.member.display_name not in allready_rolled:
+    if payload.emoji.name == '🎲' \
+            and payload.member.id in [player_one, player_two] \
+            and payload.member.display_name not in allready_rolled:
 
         discord_member = bot.guild.get_member(payload.member.id)
 
