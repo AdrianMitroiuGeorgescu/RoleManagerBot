@@ -33,6 +33,7 @@ ROLES = [
     RETIRE_ROLE
 ]
 
+
 class Schedules(Cog):
     def __init__(self, bot):
         self.bot = bot
