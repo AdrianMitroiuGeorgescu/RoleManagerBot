@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 from entities.configs import ConfigDto
 from entities.members import MemberDto
+from services.schedulesService import execute_reset_day
 
 load_dotenv()
 
@@ -32,6 +33,7 @@ ROLES = [
     ROLE_DOMNITOR,
     RETIRE_ROLE
 ]
+
 
 class Schedules(Cog):
     def __init__(self, bot):
@@ -64,20 +66,7 @@ class Schedules(Cog):
         if config_dto.value != this_hour:
             return
 
-        config_dto = ConfigDto()
-        config_dto.name = config_dto.first_to_connect
-        config_dto.get_config(config_dto)
-        config_dto.value = '0'
-        config_dto.save()
-
-        member_dto = MemberDto()
-        filters = [('first_to_voice_channel', 1)]
-        member_dto.get_member_by_filters(filters)
-        member_dto.first_to_voice_channel = 0
-        await member_dto.save(self.bot)
-        member = self.bot.guild.get_member(member_dto.member_id)
-        role = self.bot.guild.get_role(int(FIRST_TO_CONNECT_ROLE))
-        await member.remove_roles(role)
+        await execute_reset_day(self.bot)
 
     async def steal_xp(self):
         member_dto = MemberDto()

@@ -46,8 +46,8 @@ class Events(Cog, EventsServices):
             if (before.channel is None or (before.channel is not None and before.channel.id in IGNORE_VOICE_CHANNELS)) \
                     and (after.channel is not None and after.channel.id not in IGNORE_VOICE_CHANNELS):
                 member_dto.joined_voice = datetime.datetime.now()
+                member_dto = await self.check_first_to_connect(channel, config_dto, member, member_dto)
                 await member_dto.save(self.bot)
-                await self.check_first_to_connect(channel, config_dto, member, member_dto)
 
             if (before.channel is not None and before.channel.id not in IGNORE_VOICE_CHANNELS) \
                     and (after.channel is None or after.channel.id in IGNORE_VOICE_CHANNELS):
@@ -60,6 +60,7 @@ class Events(Cog, EventsServices):
             print(f'Exception type: {type(e)}')
             print(f'Arguments: {e.args}')
             print(f'Exception: {e}')
+            print(f'Member id: {member.id}')
 
     async def check_first_to_connect(self, channel, config_dto, member, member_dto):
         if not config_dto.value:
@@ -72,6 +73,7 @@ class Events(Cog, EventsServices):
             await channel.send(f'{member.mention}'
                                f' because you were the first one to connect in voice channel,'
                                f' you got an award')
+        return member_dto
 
     async def calculate_voice_time(self, member_dto):
         member_dto.left_voice = datetime.datetime.now()
