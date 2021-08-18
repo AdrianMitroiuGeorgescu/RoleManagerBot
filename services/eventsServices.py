@@ -5,15 +5,15 @@ from entities.members import MemberDto
 
 
 async def check_barbut_command(bot, embed, message, payload):
-    description = embed.description.split(':')
-    stake_is = int(description[1])
-    footer = embed.footer.text.split(':')
-    player_one = int(footer[2])
-    player_two = int(footer[5])
-    allready_rolled = []
-    player_name = None
+    description        = embed.description.split(':')
+    stake_is           = int(description[1])
+    footer             = embed.footer.text.split(':')
+    player_one         = int(footer[2])
+    player_two         = int(footer[5])
+    allready_rolled    = []
+    player_name        = None
     rolled_first_value = None
-    to_roll_player_id = player_one
+    to_roll_player_id  = player_one
 
     if payload.emoji.name == '❌' and payload.member.id in [player_one, player_two]:
         await message.clear_reactions()
@@ -46,7 +46,7 @@ async def check_barbut_command(bot, embed, message, payload):
     if embed.fields:
         for field in embed.fields:
             allready_rolled.append(field.name)
-            player_name = field.name
+            player_name        = field.name
             rolled_first_value = int(field.value)
 
     if payload.emoji.name == '🎲' \
@@ -93,7 +93,7 @@ async def check_barbut_command(bot, embed, message, payload):
 
 async def games_rewarding(bot, winner: int, loser: int, stake: int):
     member_winner = MemberDto()
-    member_loser = MemberDto()
+    member_loser  = MemberDto()
 
     member_winner.get_member(winner)
     member_winner.xp += stake
