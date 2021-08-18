@@ -14,7 +14,8 @@ admins_ids = [
 
 class Admin(Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot              = bot
+        self.schedule_service = ScheduleService
 
     @command(name='execute_command', help='Triggers a certain method from schedule')
     async def execute_command(self, ctx, command_name: str):
@@ -26,7 +27,7 @@ class Admin(Cog):
             await ctx.send(f'Only designated admins can run this command')
             return
 
-        await ScheduleService.parse_command(command_name, self.bot)
+        await self.schedule_service.parse_command(command_name, self.bot)
         await ctx.send('Command executed')
 
 
