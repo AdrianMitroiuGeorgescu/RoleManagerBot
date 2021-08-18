@@ -34,7 +34,7 @@ class Games(Cog):
         elif invited_member.xp < stake_is or challenger_member.xp < stake_is:
             await ctx.send('Nu aveți bani de barbut!')
             return
-
+        #REACTII
         reactions = ['✅', '❌']
         embed = Embed(
             title=f'Joci barbut, {member.display_name}?',
