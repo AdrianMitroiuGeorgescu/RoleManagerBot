@@ -37,7 +37,7 @@ class EventsServices:
                 return user in [payload.member, to_roll_player] and str(reaction.emoji) == '🎲'
 
             try:
-                await bot.wait_for('reaction_add', timeout=5.0, check=check)
+                await bot.wait_for('reaction_add', timeout=30.0, check=check)
             except asyncio.TimeoutError:
                 embed.add_field(name='Jocul a expirat', value='Nimeni nu a dat cu zarul', inline=True)
                 await message.edit(embed=embed)
@@ -80,7 +80,7 @@ class EventsServices:
                     return user == to_roll_player and str(reaction.emoji) == '🎲'
 
                 try:
-                    await bot.wait_for('reaction_add', timeout=5.0, check=check)
+                    await bot.wait_for('reaction_add', timeout=30.0, check=check)
                 except asyncio.TimeoutError:
                     channel = bot.get_channel(int(bot.channel))
                     embed.add_field(name=f'{to_roll_player.display_name}', value='Predat', inline=True)
