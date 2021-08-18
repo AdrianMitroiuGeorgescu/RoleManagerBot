@@ -27,7 +27,7 @@ class Admin(Cog):
             return
 
         class_method  = getattr(Schedules, command_name)
-        await class_method(self.bot)
+        await class_method()
         await ctx.send('Command executed')
 
 
