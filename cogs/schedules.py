@@ -65,12 +65,14 @@ class Schedules(Cog):
         if config_dto.value != this_hour:
             return
 
+        await self.execute_reset_day()
+
+    async def execute_reset_day(self):
         config_dto = ConfigDto()
         config_dto.name = config_dto.first_to_connect
         config_dto.get_config(config_dto)
         config_dto.value = '0'
         config_dto.save()
-
         member_dto = MemberDto()
         filters = [('first_to_voice_channel', 1)]
         member_dto.get_member_by_filters(filters)

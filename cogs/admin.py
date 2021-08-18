@@ -3,7 +3,7 @@ from discord.ext.commands import Cog, command
 from cogs.schedules import Schedules
 
 commands = [
-    'reset_day',
+    'execute_reset_day',
     'retire_members'
 ]
 admins_ids = [
