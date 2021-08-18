@@ -1,6 +1,6 @@
 from discord.ext.commands import Cog, command
 
-from cogs.schedules import Schedules
+import services.schedulesService as ScheduleService
 
 commands = [
     'execute_reset_day',
@@ -26,8 +26,7 @@ class Admin(Cog):
             await ctx.send(f'Only designated admins can run this command')
             return
 
-        class_method  = getattr(Schedules, command_name)
-        await class_method()
+        await ScheduleService.parse_command(command_name, self.bot)
         await ctx.send('Command executed')
 
 
