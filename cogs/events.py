@@ -1,12 +1,12 @@
 import os
 import datetime
-from time import sleep, time
 
 from discord.ext.commands import Cog
 from dotenv import load_dotenv
 
 from entities.configs import ConfigDto
 from entities.members import MemberDto, ROLE_NOMAD
+import services.eventsServices as EventsServices
 
 load_dotenv()
 
@@ -26,6 +26,7 @@ TIME_TO_VALIDATE_FLAG = 900
 class Events(Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.events_services = EventsServices
 
     @Cog.listener()
     async def on_ready(self):
@@ -45,7 +46,6 @@ class Events(Cog):
         try:
             if (before.channel is None or (before.channel is not None and before.channel.id in IGNORE_VOICE_CHANNELS)) \
                     and (after.channel is not None and after.channel.id not in IGNORE_VOICE_CHANNELS):
-
                 member_dto.joined_voice = datetime.datetime.now()
                 member_dto = await self.check_first_to_connect(channel, config_dto, member, member_dto)
                 await member_dto.save(self.bot)
@@ -141,22 +141,9 @@ class Events(Cog):
             if len(message.embeds) > 0:
                 for embed in message.embeds:
                     if 'Kick' in embed.title:
-                        description = embed.description.split(':')
-                        votes_needed = int(description[1])
-                        footer = embed.footer.text.split(':')
-                        member_id = int(footer[1])
-
-                        for reaction in message.reactions:
-                            if reaction.emoji == '❌' and payload.member.id == member_id and reaction.count >= 2:
-                                await message.clear_reactions()
-                            if reaction.emoji == '✅' and reaction.count >= votes_needed:
-                                afk_channel = self.bot.get_channel(AFK_VOICE_CHANNEL)
-                                guild_member = self.bot.guild.get_member(member_id)
-                                if guild_member.voice is None:
-                                    await message.clear_reactions()
-                                    return
-                                await guild_member.edit(voice_channel=afk_channel)
-                                await message.clear_reactions()
+                        await self.check_kick_command(embed=embed, message=message, payload=payload)
+                    elif 'barbut' in embed.title:
+                        await self.events_services.check_barbut_command(self.bot, embed=embed, message=message, payload=payload)
 
     @Cog.listener()
     async def on_raw_reaction_remove(self, payload):
@@ -172,11 +159,11 @@ class Events(Cog):
     @Cog.listener()
     async def on_member_join(self, member):
         if not member.bot:
-            member_dto = MemberDto()
+            member_dto           = MemberDto()
             member_dto.member_id = member.id
-            guild_member = self.bot.guild.get_member(int(member_dto.member_id))
-            role_nomad = self.bot.guild.get_role(int(ROLE_NOMAD))
-            channel = self.bot.get_channel(int(self.bot.channel))
+            guild_member         = self.bot.guild.get_member(int(member_dto.member_id))
+            role_nomad           = self.bot.guild.get_role(int(ROLE_NOMAD))
+            channel              = self.bot.get_channel(int(self.bot.channel))
             await channel.send(f'{guild_member.mention}, bun venit in Romania!')
             await guild_member.add_roles(role_nomad)
             await member_dto.save(self.bot)
@@ -197,12 +184,32 @@ class Events(Cog):
             member_dto.xp += -10
             config_dto.value = 0
             config_dto.save()
-            role   = self.bot.guild.get_role(int(FIRST_TO_CONNECT_ROLE))
+            role = self.bot.guild.get_role(int(FIRST_TO_CONNECT_ROLE))
             member = self.bot.guild.get_member(int(member_dto.member_id))
             await member.remove_roles(role)
             await member_dto.save(self.bot)
             return True
         return False
+
+    async def check_kick_command(self, embed, message, payload):
+        description  = embed.description.split(':')
+        votes_needed = int(description[1])
+        footer       = embed.footer.text.split(':')
+        member_id    = int(footer[1])
+
+        for reaction in message.reactions:
+            if reaction.emoji == '❌' and payload.member.id == member_id and reaction.count >= 2:
+                await message.clear_reactions()
+
+            if reaction.emoji == '✅' and reaction.count >= votes_needed:
+                afk_channel  = self.bot.get_channel(AFK_VOICE_CHANNEL)
+                guild_member = self.bot.guild.get_member(member_id)
+
+                if guild_member.voice is None:
+                    await message.clear_reactions()
+                    return
+                await guild_member.edit(voice_channel=afk_channel)
+                await message.clear_reactions()
 
 
 def setup(bot):
