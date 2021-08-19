@@ -1,7 +1,7 @@
 import os
 import datetime
-from time import sleep, time
 
+from discord import Member
 from discord.ext.commands import Cog
 from dotenv import load_dotenv
 
@@ -180,6 +180,12 @@ class Events(Cog):
             await channel.send(f'{guild_member.mention}, bun venit in Romania!')
             await guild_member.add_roles(role_nomad)
             await member_dto.save(self.bot)
+
+    @Cog.listener()
+    async def on_member_remove(self, member: Member):
+        if not member.bot:
+            channel = self.bot.get_channel(int(self.bot.channel))
+            await channel.send(f'{member.mention}, a plecat in exil!')
 
     async def check_hit_and_runner(self, member_id: int):
         config_dto      = ConfigDto()
