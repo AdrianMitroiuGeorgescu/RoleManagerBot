@@ -45,7 +45,7 @@ async def check_barbut_command(bot: Bot, embed: Embed, message: Message, payload
         discord_member = bot.guild.get_member(payload.member.id)
         roll           = random.randrange(1, 100)
 
-        embed.add_field(name=f'{discord_member.display_name}', value=roll, inline=True)
+        embed.add_field(name=f'{discord_member.display_name}', value=str(roll), inline=True)
         await message.edit(embed=embed)
 
         print(embed.fields)
