@@ -1,8 +1,9 @@
 import datetime
 import os
 from random import randrange
+from typing import Optional
 
-from discord import Embed
+from discord import Embed, Member
 from discord.ext.commands import Cog, command
 from discord.ext.menus import ListPageSource, MenuPages
 
@@ -48,7 +49,7 @@ class HelpMenu(ListPageSource):
         return await self.write_page(menu, offset, fields)
 
 
-class Exp(Cog):
+class Xp(Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -114,6 +115,19 @@ class Exp(Cog):
         await ctx.send(f'{ctx.author.mention} got home in time to stop the heist! '
                        f'{self.bot.get_user(thief.member_id).mention}, you can`t steal xp anymore!')
 
+    @command(name='get_xp', help='Returns xp and total xp of a member or of the requester if no member is given')
+    async def get_xp(self, ctx, member: Optional[Member] = None):
+        member_dto = MemberDto()
+
+        if member is None:
+            member_dto.get_member(ctx.author.id)
+            message = f'You have {member_dto.xp} amount of xp (currency) and a total of {member_dto.total_xp} xp'
+        else:
+            member_dto.get_member(member.id)
+            message = f'{member.mention} has {member_dto.xp} amount of xp  (currency) ' \
+                      f'and a total of {member_dto.total_xp} xp'
+        await ctx.send(message)
+
 
 def setup(bot):
-    bot.add_cog(Exp(bot))
+    bot.add_cog(Xp(bot))

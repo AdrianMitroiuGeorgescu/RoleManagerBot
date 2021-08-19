@@ -101,11 +101,6 @@ class Miscellanies(Cog):
 
         await ctx.send(f'{about_dto.name} was added into database.')
 
-    @command(name='get_xp', help='Returns ')
-    async def get_xp(self, ctx):
-        pass
-        #await ctx.send(embed=embed)
-
     @command(name='add_config', help='Add config into configs', hidden=True)
     async def add_config(self, ctx, name, value):
         roles    = ctx.author.roles
