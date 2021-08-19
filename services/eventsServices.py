@@ -1,5 +1,6 @@
 import asyncio
 import random
+from datetime import datetime
 
 from discord import Embed, Message, Member
 
@@ -19,6 +20,11 @@ async def check_barbut_command(bot: Bot, embed: Embed, message: Message, payload
 
     if payload.member.id not in [player_one, player_two] or len(embed.fields) > 1:
         return
+
+    print('START REACTION LOG')
+    print(f'Member: {payload.member.display_name}')
+    print(f'Emoji: {payload.emoji.name}')
+    print(f'Timestamp: {datetime.now()}')
 
     if payload.emoji.name == '❌':
         embed.add_field(name=f'{payload.member.display_name}', value='Nu a acceptat invitația', inline=True)
@@ -45,10 +51,12 @@ async def check_barbut_command(bot: Bot, embed: Embed, message: Message, payload
         discord_member = bot.guild.get_member(payload.member.id)
         roll           = random.randrange(1, 100)
 
+        print(f'Roll: {roll}')
+        print('END REACTION LOG')
+
         embed.add_field(name=f'{discord_member.display_name}', value=str(roll), inline=True)
         await message.edit(embed=embed)
 
-        print(embed.fields)
         if 2 == len(embed.fields):
             if rolled_first_value > roll:
                 embed.add_field(name=f':crown: Câștigătorul este {player_name}',
