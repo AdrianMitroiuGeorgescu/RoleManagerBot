@@ -53,7 +53,7 @@ async def check_barbut_command(bot: Bot, embed: Embed, message: Message, payload
         roll           = random.randrange(1, 100)
 
         print(f'Payload member name: {payload.member.display_name}')
-        print(f'Player Name Rolled: {player_name}')
+        print(f'Player Name stored: {player_name}')
         print(f'Roll: {roll}')
         print('END REACTION LOG')
         print('--------------------------------------')
@@ -84,7 +84,6 @@ async def check_barbut_command(bot: Bot, embed: Embed, message: Message, payload
                 embed.add_field(name=f'{to_roll_player.display_name}', value='Predat', inline=True)
                 embed.add_field(name=f':crown: Câștigătorul este {payload.member.display_name}',
                                 value=f'A câștigat {stake_is} XP', inline=False)
-
                 await games_rewarding(bot, payload.member.id, to_roll_player.id, stake_is)
         else:
             return
