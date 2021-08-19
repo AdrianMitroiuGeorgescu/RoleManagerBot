@@ -1,6 +1,9 @@
+from discord import Member
 from discord.ext.commands import Cog, command
 
 import services.schedulesService as ScheduleService
+import services.adminService as AdminService
+from entities.members import MemberDto
 
 commands = [
     'execute_reset_day',
@@ -16,6 +19,7 @@ class Admin(Cog):
     def __init__(self, bot):
         self.bot              = bot
         self.schedule_service = ScheduleService
+        self.admin_service    = AdminService
 
     @command(name='execute_command', help='Triggers a certain method from schedule')
     async def execute_command(self, ctx, command_name: str):
@@ -28,6 +32,24 @@ class Admin(Cog):
             return
 
         await self.schedule_service.parse_command(command_name, self.bot)
+        await ctx.send('Command executed')
+
+    @command(name='xp_police', help='Recovers a certain amount of xp from a member to another')
+    async def xp_police(self, ctx, from_member: Member, to_member: Member, amount: int):
+        if ctx.author.id not in admins_ids:
+            await ctx.send(f'Only designated admins can run this command')
+            return
+
+        from_member_dto = MemberDto()
+        from_member_dto.get_member(int(from_member.id))
+        to_member_dto   = MemberDto()
+        to_member_dto.get_member(int(to_member.id))
+
+        if from_member_dto.xp < amount:
+            ctx.send(f'There is a mistake. {from_member.mention} does not have {amount} amount of xp')
+            return
+
+        await self.admin_service.transfer_xp(self.bot, from_member_dto, to_member_dto, amount)
         await ctx.send('Command executed')
 
 
