@@ -21,6 +21,7 @@ async def check_barbut_command(bot: Bot, embed: Embed, message: Message, payload
     if payload.member.id not in [player_one, player_two] or len(embed.fields) > 1:
         return
 
+    print('--------------------------------------')
     print('START REACTION LOG')
     print(f'Member: {payload.member.display_name}')
     print(f'Emoji: {payload.emoji.name}')
@@ -51,8 +52,11 @@ async def check_barbut_command(bot: Bot, embed: Embed, message: Message, payload
         discord_member = bot.guild.get_member(payload.member.id)
         roll           = random.randrange(1, 100)
 
+        print(f'Payload member name: {payload.member.display_name}')
+        print(f'Player Name Rolled: {player_name}')
         print(f'Roll: {roll}')
         print('END REACTION LOG')
+        print('--------------------------------------')
 
         embed.add_field(name=f'{discord_member.display_name}', value=str(roll), inline=True)
         await message.edit(embed=embed)
@@ -82,6 +86,9 @@ async def check_barbut_command(bot: Bot, embed: Embed, message: Message, payload
                                 value=f'A câștigat {stake_is} XP', inline=False)
 
                 await games_rewarding(bot, payload.member.id, to_roll_player.id, stake_is)
+        else:
+            return
+
         embed.set_footer(text="")
         await message.edit(embed=embed)
         await message.clear_reactions()
