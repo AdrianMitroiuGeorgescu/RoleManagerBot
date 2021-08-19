@@ -19,6 +19,12 @@ async def check_barbut_command(bot, embed, message, payload):
         await message.clear_reactions()
         return
 
+    if embed.fields:
+        for field in embed.fields:
+            allready_rolled.append(field.name)
+            player_name        = field.name
+            rolled_first_value = int(field.value)
+
     if payload.member.id == player_one:
         to_roll_player_id = player_two
 
@@ -30,7 +36,6 @@ async def check_barbut_command(bot, embed, message, payload):
         for reaction in reactions:
             await message.add_reaction(reaction)
 
-        # timer
         def check(reaction, user):
             return user in [payload.member, to_roll_player] and str(reaction.emoji) == '🎲'
         try:
@@ -39,28 +44,20 @@ async def check_barbut_command(bot, embed, message, payload):
             embed.add_field(name='Jocul a expirat', value='Nimeni nu a dat cu zarul', inline=True)
             await message.edit(embed=embed)
             await message.clear_reactions()
-        # timer
 
         return
-
-    if embed.fields:
-        for field in embed.fields:
-            allready_rolled.append(field.name)
-            player_name        = field.name
-            rolled_first_value = int(field.value)
 
     if payload.emoji.name == '🎲' \
             and payload.member.id in [player_one, player_two] \
             and payload.member.display_name not in allready_rolled:
 
         discord_member = bot.guild.get_member(payload.member.id)
+        roll           = random.randrange(1, 100)
 
-        roll = random.randrange(1, 100)
         embed.add_field(name=f'{discord_member.display_name}', value=roll, inline=True)
         await message.edit(embed=embed)
 
-        if 1 <= len(allready_rolled):
-
+        if 1 == len(allready_rolled):
             if rolled_first_value > roll:
                 embed.add_field(name=f':crown: Câștigătorul este {player_name}', value=f'A câștigat {stake_is} XP',
                                 inline=False)
@@ -72,8 +69,7 @@ async def check_barbut_command(bot, embed, message, payload):
             elif rolled_first_value == roll:
                 embed.add_field(name=':crown: Egalitate', value='Nimeni nu a câștigat', inline=False)
 
-        else:
-
+        elif 0 == len(allready_rolled):
             def check(reaction, user):
                 return user == to_roll_player and str(reaction.emoji) == '🎲'
             try:
@@ -102,3 +98,5 @@ async def games_rewarding(bot, winner: int, loser: int, stake: int):
     member_loser.get_member(loser)
     member_loser.xp += -stake
     await member_loser.save(bot)
+
+    return
