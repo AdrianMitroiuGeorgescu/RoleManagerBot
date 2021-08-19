@@ -143,7 +143,7 @@ class Events(Cog):
                 for embed in message.embeds:
                     if 'Kick' in embed.title:
                         await self.check_kick_command(embed=embed, message=message, payload=payload)
-                    elif 'barbut' in embed.title:
+                    elif 'barbut' in embed.title and len(embed.footer.text):
                         await self.events_services.check_barbut_command(self.bot, embed=embed, message=message, payload=payload)
 
     @Cog.listener()
