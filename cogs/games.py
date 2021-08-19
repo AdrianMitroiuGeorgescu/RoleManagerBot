@@ -35,7 +35,7 @@ class Games(Cog):
             await ctx.send('Nu aveți bani de barbut!')
             return
 
-        reactions = ['✅', '❌']
+        reactions = ['🎲', '❌']
         embed = Embed(
             title=f'Joci barbut, {member.display_name}?',
             description=f'Miza este de: {stake_is}'
@@ -49,7 +49,7 @@ class Games(Cog):
             await react.add_reaction(reaction)
 
         def check(reaction, user):
-            return user == member and str(reaction.emoji) == '✅'
+            return user == member and str(reaction.emoji) == '🎲'
         try:
             await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
         except asyncio.TimeoutError:

@@ -1,6 +1,5 @@
 import os
 import datetime
-from time import sleep
 
 from discord import Member
 from discord.ext.commands import Cog
@@ -131,7 +130,6 @@ class Events(Cog):
                     member_extend_dto.update_extend()
 
             channel = self.bot.guild.get_channel(payload.channel_id)
-            sleep(1)
             message = await channel.fetch_message(payload.message_id)
 
             now = int((datetime.datetime.now()).strftime('%S'))
