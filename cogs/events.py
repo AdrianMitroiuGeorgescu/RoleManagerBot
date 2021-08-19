@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 from entities.configs import ConfigDto
 from entities.members import MemberDto, ROLE_NOMAD
-import services.eventsServices as EventsServices
+import services.eventsService as EventsService
 
 load_dotenv()
 
@@ -27,7 +27,7 @@ TIME_TO_VALIDATE_FLAG = 900
 class Events(Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.events_services = EventsServices
+        self.events_services = EventsService
 
     @Cog.listener()
     async def on_ready(self):
