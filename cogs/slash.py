@@ -3,7 +3,7 @@ from discord_slash import cog_ext, SlashContext
 
 with open("./lib/bot/guild.token", "r", encoding="utf-8") as gt:
     guild = gt.read()
-GUILD_ID = [int(guild)]
+GUILD_ID = [int(780084361927589921)]
 
 
 class Slash(Cog):
