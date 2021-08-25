@@ -7,6 +7,7 @@ from discord import Embed, Intents, Forbidden
 from discord.ext import commands
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord.ext.commands import Context, CommandNotFound, CommandOnCooldown, MissingRequiredArgument, MemberNotFound
+from discord_slash import SlashCommand
 from dotenv import load_dotenv
 from mysql.connector import DatabaseError
 
@@ -55,6 +56,7 @@ class Bot(commands.Bot):
 
     # run
     def run(self, version):
+        slash = SlashCommand(self, override_type=True)
         self.version = version
         print("Setup starts...")
         self.setup()
