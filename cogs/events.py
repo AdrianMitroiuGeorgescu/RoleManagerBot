@@ -1,5 +1,6 @@
 import os
 import datetime
+import services.eventService as eventService
 
 from discord import Member
 from discord.ext.commands import Cog
@@ -7,7 +8,6 @@ from dotenv import load_dotenv
 
 from entities.configs import ConfigDto
 from entities.members import MemberDto, ROLE_NOMAD
-import services.eventsService as EventsService
 
 load_dotenv()
 
@@ -27,7 +27,7 @@ TIME_TO_VALIDATE_FLAG = 900
 class Events(Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.events_services = EventsService
+        self.eventsService = eventService
 
     @Cog.listener()
     async def on_ready(self):
@@ -143,8 +143,6 @@ class Events(Cog):
                 for embed in message.embeds:
                     if 'Kick' in embed.title:
                         await self.check_kick_command(embed=embed, message=message, payload=payload)
-                    elif 'barbut' in embed.title and len(embed.footer.text):
-                        await self.events_services.check_barbut_command(self.bot, embed=embed, message=message, payload=payload)
 
     @Cog.listener()
     async def on_raw_reaction_remove(self, payload):

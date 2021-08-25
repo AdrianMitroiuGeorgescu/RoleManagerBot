@@ -186,13 +186,5 @@ class MemberDto:
 
         return inactive_members
 
-    def check_minimum_xp(self, member_id: int, xp: int):
-        db_member = self.repository.get_member(member_id)
-        member_dto = MemberDto()
-        member_dto.setup_member(db_member)
-        if member_dto.xp < xp:
-            return False
-        return True
-
 
 member = MemberDto()
