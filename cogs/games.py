@@ -1,11 +1,13 @@
 import asyncio
 import os
+import random
 
 from discord import Member, Embed
 from discord.ext.commands import Cog, command
 from dotenv import load_dotenv
 
 from entities.members import MemberDto
+from services.eventsService import games_rewarding
 
 load_dotenv()
 
@@ -51,7 +53,34 @@ class Games(Cog):
         def check(reaction, user):
             return user == member and str(reaction.emoji) == '🎲'
         try:
-            await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
+            await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
+            roll = random.randrange(1, 100)
+            embed.add_field(name=f'{member.display_name}', value=str(roll), inline=True)
+            await react.edit(embed=embed)
+
+            await react.clear_reactions()
+            reactions = ['🎲']
+            for reaction in reactions:
+                await react.add_reaction(reaction)
+
+            def check(reaction, user):
+                return user == ctx.author and str(reaction.emoji) == '🎲'
+
+            try:
+                await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
+            except asyncio.TimeoutError:
+                embed.add_field(name=f'{ctx.author.display_name}', value='Predat', inline=True)
+                embed.add_field(name=f':crown: Câștigătorul este {member.display_name}',
+                                value=f'A câștigat {stake_is} XP', inline=False)
+                print('se face plata catre castigator')
+                await games_rewarding(self.bot, member.id, ctx.author.id, stake_is)
+
+                embed.set_footer(text="")
+                await react.edit(embed=embed)
+                await react.edit(embed=embed)
+                await react.clear_reactions()
+                return
+
         except asyncio.TimeoutError:
             embed.add_field(name=f'{member.display_name}', value='Nu a acceptat invitația', inline=True)
             embed.set_footer(text="")
