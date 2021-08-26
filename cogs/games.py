@@ -9,6 +9,7 @@ from discord.ext.commands import Cog, command
 from dotenv import load_dotenv
 
 load_dotenv()
+GAME_TIMEOUT = 30
 
 
 class Games(Cog):
@@ -46,7 +47,7 @@ class Games(Cog):
         try:
             def check(reaction, user):
                 return user == member and str(reaction.emoji) in ['🎲', '❌']
-            reaction, user = await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
+            reaction, user = await self.bot.wait_for('reaction_add', timeout=GAME_TIMEOUT, check=check)
 
             if str(reaction) == '❌':
                 embed.add_field(name=f'{member.display_name}', value='Nu a acceptat invitația', inline=True)
@@ -66,7 +67,7 @@ class Games(Cog):
             def check(reaction, user):
                 return user == ctx.author and str(reaction.emoji) == '🎲'
             try:
-                await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
+                await self.bot.wait_for('reaction_add', timeout=GAME_TIMEOUT, check=check)
                 challenger_roll = random.randrange(1, 100)
                 embed.add_field(name=f'{ctx.author.display_name}', value=str(challenger_roll), inline=True)
                 await react.edit(embed=embed)
