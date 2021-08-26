@@ -7,6 +7,7 @@ from discord import Embed, Intents, Forbidden
 from discord.ext import commands
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord.ext.commands import Context, CommandNotFound, CommandOnCooldown, MissingRequiredArgument, MemberNotFound
+from discord_slash import SlashCommand
 from dotenv import load_dotenv
 from mysql.connector import DatabaseError
 
@@ -45,6 +46,7 @@ class Bot(commands.Bot):
             intents=Intents.all()
         )
 
+
     # setup
     def setup(self):
         print(COGS)
@@ -55,6 +57,8 @@ class Bot(commands.Bot):
 
     # run
     def run(self, version):
+        #aici am pus debug cu guild id sa poti verifica instant
+        slash = SlashCommand(self, override_type=True, sync_on_cog_reload=True, sync_commands=True, debug_guild=780084361927589921)
         self.version = version
         print("Setup starts...")
         self.setup()
