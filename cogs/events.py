@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 
 from entities.configs import ConfigDto
 from entities.members import MemberDto, ROLE_NOMAD
-import services.eventsServices as EventsServices
 
 load_dotenv()
 
@@ -27,7 +26,6 @@ TIME_TO_VALIDATE_FLAG = 900
 class Events(Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.events_services = EventsServices
 
     @Cog.listener()
     async def on_ready(self):
@@ -143,8 +141,6 @@ class Events(Cog):
                 for embed in message.embeds:
                     if 'Kick' in embed.title:
                         await self.check_kick_command(embed=embed, message=message, payload=payload)
-                    elif 'barbut' in embed.title and len(embed.footer.text):
-                        await self.events_services.check_barbut_command(self.bot, embed=embed, message=message, payload=payload)
 
     @Cog.listener()
     async def on_raw_reaction_remove(self, payload):
