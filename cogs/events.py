@@ -1,6 +1,5 @@
 import os
 import datetime
-import services.eventService as eventService
 
 from discord import Member
 from discord.ext.commands import Cog
@@ -27,7 +26,6 @@ TIME_TO_VALIDATE_FLAG = 900
 class Events(Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.eventsService = eventService
 
     @Cog.listener()
     async def on_ready(self):

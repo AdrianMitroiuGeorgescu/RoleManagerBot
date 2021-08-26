@@ -13,9 +13,9 @@ load_dotenv()
 
 class Games(Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot           = bot
         self.memberService = memberService
-        self.gameService = gameService
+        self.gameService   = gameService
 
     @Cog.listener()
     async def on_ready(self):
@@ -24,7 +24,6 @@ class Games(Cog):
 
     @command(name='barbut', pass_context=True, help='Poți juca barbut cu un membru la alegere')
     async def barbut(self, ctx, member: Member, stake_is: int):
-
         if ctx.author.id == member.id:
             await ctx.send('Jocul ăsta se joacă în doi!')
             return
@@ -44,10 +43,9 @@ class Games(Cog):
         for reaction in reactions:
             await react.add_reaction(reaction)
 
-        def check(reaction, user):
-            return user == member and str(reaction.emoji) in ['🎲', '❌']
-
         try:
+            def check(reaction, user):
+                return user == member and str(reaction.emoji) in ['🎲', '❌']
             reaction, user = await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
 
             if str(reaction) == '❌':
@@ -59,9 +57,9 @@ class Games(Cog):
             invited_roll = random.randrange(1, 100)
             embed.add_field(name=f'{member.display_name}', value=str(invited_roll), inline=True)
             await react.edit(embed=embed)
-
             await react.clear_reactions()
             reactions = ['🎲']
+
             for reaction in reactions:
                 await react.add_reaction(reaction)
 
@@ -74,12 +72,12 @@ class Games(Cog):
                 await react.edit(embed=embed)
 
                 if invited_roll > challenger_roll:
-                    name  = ':crown: Câștigătorul este %s' % (member.display_name)
-                    value = 'A câștigat %d XP' % (stake_is)
+                    name  = ':crown: Câștigătorul este %s' % member.display_name
+                    value = 'A câștigat %d XP' % stake_is
                     await self.gameService.games_rewarding(self.bot, member.id, ctx.author.id, stake_is)
                 elif invited_roll < challenger_roll:
-                    name  = ':crown: Câștigătorul este %s' % (ctx.author.display_name)
-                    value = 'A câștigat %d XP' % (stake_is)
+                    name  = ':crown: Câștigătorul este %s' % ctx.author.display_name
+                    value = 'A câștigat %d XP' % stake_is
                     await self.gameService.games_rewarding(self.bot, ctx.author.id, member.id, stake_is)
                 else:
                     name  = ':crown: Egalitate'
