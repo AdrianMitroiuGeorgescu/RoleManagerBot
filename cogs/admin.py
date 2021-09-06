@@ -1,3 +1,5 @@
+from typing import Optional
+
 from discord import Member
 from discord.ext.commands import Cog, command
 
@@ -10,8 +12,7 @@ commands = [
     'retire_members'
 ]
 admins_ids = [
-    202021695685394433,
-    267805388542443521
+    202021695685394433
 ]
 
 
@@ -52,21 +53,27 @@ class Admin(Cog):
         await self.admin_service.transfer_xp(self.bot, from_member_dto, to_member_dto, amount)
         await ctx.send('Command executed')
 
-    # @command(name='move_message_xp_to_xp', help='Temporary command that moves all xp from messages to xp as currency')
-    # async def move_message_xp_to_xp(self, ctx):
-    #     if ctx.author.id not in admins_ids:
-    #         await ctx.send(f'Only designated admins can run this command')
-    #         return
-    #
-    #     member_dto = MemberDto()
-    #     members    = member_dto.get_leaderboard()
-    #
-    #     for member in members:
-    #         if isinstance(member, MemberDto):
-    #             member.xp += member.messages_xp
-    #             await member.save(self.bot)
-    #             discord_member = self.bot.guild.get_member(int(member.member_id))
-    #             await ctx.send(f'{discord_member.mention} message xp was converted into currency')
+    @command(name='move_message_xp_to_xp', help='Temporary command that moves all xp from messages to xp as currency')
+    async def move_message_xp_to_xp(self, ctx, member: Optional[Member]):
+        if ctx.author.id not in admins_ids:
+            await ctx.send(f'Only designated admins can run this command')
+            return
+
+        member_dto = MemberDto()
+
+        if member is not None:
+            member_dto.member_id = member.id
+            member_dto.xp += member_dto.messages_xp
+            await member_dto.save(self.bot)
+            await ctx.send(f'{member.mention} message xp was converted into currency')
+
+        # members = member_dto.get_leaderboard()
+        # for member in members:
+        #     if isinstance(member, MemberDto):
+        #         member.xp += member.messages_xp
+        #         await member.save(self.bot)
+        #         discord_member = self.bot.guild.get_member(int(member.member_id))
+        #         await ctx.send(f'{discord_member.mention} message xp was converted into currency')
 
 
 def setup(bot):
