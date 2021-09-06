@@ -39,7 +39,7 @@ class MembersRepository(Db):
                      member_dto.emojis_xp,
                      member_dto.web_xp,
                      member_dto.share_xp,
-                     member_dto.xp + member_dto.messages_xp + member_dto.emojis_xp + member_dto.web_xp + member_dto.share_xp,
+                     member_dto.xp + member_dto.emojis_xp + member_dto.web_xp + member_dto.share_xp,
                      int(member_dto.member_id))
 
     def get_member_by_filters(self, filters):

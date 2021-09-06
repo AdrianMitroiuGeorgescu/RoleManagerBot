@@ -138,7 +138,7 @@ class MemberDto:
         self.repository.reset_heist()
 
     async def update_member_level(self, bot):
-        self.total_xp = self.xp + self.messages_xp + self.emojis_xp + self.web_xp + self.share_xp
+        self.total_xp = self.xp + self.emojis_xp + self.web_xp + self.share_xp
 
         level_dto = LevelDto()
         level_dto.get_level_up(self.total_xp)

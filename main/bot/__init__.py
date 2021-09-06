@@ -153,6 +153,7 @@ class Bot(commands.Bot):
                         member_dto = MemberDto()
                         member_dto.get_member(message.author.id)
                         member_dto.messages_xp += 1
+                        member_dto.xp          += 1
                         await member_dto.save(self)
         except Exception as e:
             print(f'Timestamp: {datetime.now()}')
