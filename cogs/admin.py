@@ -53,8 +53,8 @@ class Admin(Cog):
         await self.admin_service.transfer_xp(self.bot, from_member_dto, to_member_dto, amount)
         await ctx.send('Command executed')
 
-    @command(name='move_message_xp_to_xp', help='Temporary command that moves all xp from messages to xp as currency')
-    async def move_message_xp_to_xp(self, ctx, member: Optional[Member]):
+    @command(name='exchange_xp', help='Temporary command that moves all xp from messages to xp as currency')
+    async def exchange_xp(self, ctx, member: Optional[Member]):
         if ctx.author.id not in admins_ids:
             await ctx.send(f'Only designated admins can run this command')
             return
@@ -62,7 +62,7 @@ class Admin(Cog):
         member_dto = MemberDto()
 
         if member is not None:
-            member_dto.member_id = member.id
+            member_dto.get_member(int(member.id))
             member_dto.xp += member_dto.messages_xp
             await member_dto.save(self.bot)
             await ctx.send(f'{member.mention} message xp was converted into currency')
