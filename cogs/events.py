@@ -66,7 +66,7 @@ class Events(Cog):
         if config_dto.id == FIRST_TO_CONNECT_ID and config_dto.value == 0:
             member_dto.xp   += 10
             member_dto.first_to_voice_channel = 1
-            config_dto.value = 1
+            config_dto.value = '1'
             print('events top')
             config_dto.save()
             role = self.bot.guild.get_role(int(FIRST_TO_CONNECT_ROLE))
