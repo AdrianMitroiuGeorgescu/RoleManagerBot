@@ -23,6 +23,7 @@ class ConfigRepository(Db):
         return results
 
     def save(self, config_dto):
-        print(config_dto)
+        print(config_dto.value)
+        print(config_dto.name)
         query = 'UPDATE configs SET value = %s, modified=NOW(3) WHERE id = "%s"'
         self.execute(query, config_dto.value, config_dto.id)
