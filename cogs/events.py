@@ -10,17 +10,17 @@ from entities.members import MemberDto, ROLE_NOMAD
 
 load_dotenv()
 
-FIRST_TO_CONNECT_ROLE = int(os.getenv('first_to_connect_role_id'))
-AFK_VOICE_CHANNEL = int(os.getenv('afk_channel_id'))
-IGNORE_VOICE_CHANNELS = [
-    AFK_VOICE_CHANNEL
-]
-GENERAL_VOICE_CHANNEL = int(os.getenv('general_voice_channel'))
-GENERAL_TEXT_CHANNEL = int(os.getenv('general_text_channel'))
+FIRST_TO_CONNECT_ROLE  = int(os.getenv('first_to_connect_role_id'))
+AFK_VOICE_CHANNEL      = int(os.getenv('afk_channel_id'))
+GENERAL_VOICE_CHANNEL  = int(os.getenv('general_voice_channel'))
+GENERAL_TEXT_CHANNEL   = int(os.getenv('general_text_channel'))
 GAMING_1_VOICE_CHANNEL = int(os.getenv('gaming_1_voice_channel'))
-XP_INTERVAL = 900
-REACTION_COOLDOWN = 300
+
+IGNORE_VOICE_CHANNELS = [AFK_VOICE_CHANNEL]
+XP_INTERVAL           = 900
+REACTION_COOLDOWN     = 300
 TIME_TO_VALIDATE_FLAG = 900
+FIRST_TO_CONNECT_ID   = 1
 
 
 class Events(Cog):
@@ -63,8 +63,8 @@ class Events(Cog):
             print(f'Member id: {member.id}')
 
     async def check_first_to_connect(self, channel, config_dto, member, member_dto):
-        if not config_dto.value:
-            member_dto.xp += 10
+        if config_dto.id == FIRST_TO_CONNECT_ID:
+            member_dto.xp   += 10
             member_dto.first_to_voice_channel = 1
             config_dto.value = 1
             config_dto.save()
