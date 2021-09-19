@@ -8,7 +8,6 @@ FIRST_TO_CONNECT_ROLE = int(os.getenv('first_to_connect_role_id'))
 
 
 async def execute_reset_day(bot: Bot):
-    print('victory')
     config_dto       = ConfigDto()
     config_dto.name  = config_dto.first_to_connect
     config_dto.get_config(config_dto)

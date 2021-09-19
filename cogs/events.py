@@ -36,10 +36,10 @@ class Events(Cog):
     async def on_voice_state_update(self, member, before, after):
         if member.bot:
             return
-        channel = self.bot.get_channel(int(self.bot.channel))
-        member_dto = MemberDto()
+        channel         = self.bot.get_channel(int(self.bot.channel))
+        member_dto      = MemberDto()
         member_dto.get_member(member.id)
-        config_dto = ConfigDto()
+        config_dto      = ConfigDto()
         config_dto.name = config_dto.first_to_connect
         config_dto.get_config(config_dto)
         try:
@@ -63,7 +63,7 @@ class Events(Cog):
             print(f'Member id: {member.id}')
 
     async def check_first_to_connect(self, channel, config_dto, member, member_dto):
-        if config_dto.id == FIRST_TO_CONNECT_ID:
+        if config_dto.id == FIRST_TO_CONNECT_ID and config_dto.value == 0:
             member_dto.xp   += 10
             member_dto.first_to_voice_channel = 1
             config_dto.value = 1
