@@ -49,6 +49,7 @@ class ConfigDto(ConfigTrait):
         return configs
 
     def save(self):
+        print(self)
         self.repository.save(self)
 
 
