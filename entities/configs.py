@@ -13,6 +13,7 @@ class ConfigDto(ConfigTrait):
 
     def get_config(self, config_dto):
         db_config = self.repository.get_config(config_dto)
+        print(db_config)
         if db_config is None:
             return None
         self.setup_config(db_config)
