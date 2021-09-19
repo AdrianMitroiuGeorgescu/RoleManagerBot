@@ -67,6 +67,7 @@ class Events(Cog):
             member_dto.xp   += 10
             member_dto.first_to_voice_channel = 1
             config_dto.value = 1
+            print('events top')
             config_dto.save()
             role = self.bot.guild.get_role(int(FIRST_TO_CONNECT_ROLE))
             await member.add_roles(role)
@@ -187,6 +188,7 @@ class Events(Cog):
             member_dto.xp += -10
             config_dto.value = 0
             config_dto.save()
+            print('events bot')
             role = self.bot.guild.get_role(int(FIRST_TO_CONNECT_ROLE))
             member = self.bot.guild.get_member(int(member_dto.member_id))
             await member.remove_roles(role)

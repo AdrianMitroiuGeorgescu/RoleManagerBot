@@ -11,8 +11,9 @@ async def execute_reset_day(bot: Bot):
     config_dto       = ConfigDto()
     config_dto.name  = config_dto.first_to_connect
     config_dto.get_config(config_dto)
-    config_dto.value = '0'
+    config_dto.value = 0
     config_dto.save()
+    print('schedule service')
 
     member_dto = MemberDto()
     filters = [('first_to_voice_channel', 1)]

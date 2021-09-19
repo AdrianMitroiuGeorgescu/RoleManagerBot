@@ -162,6 +162,7 @@ class Miscellanies(Cog):
 
         config_dto.value = value
         config_dto.save()
+        print('misc')
         await ctx.send(f'{config_dto.name} config has been saved. New value {config_dto.value}')
 
 
