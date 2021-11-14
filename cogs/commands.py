@@ -1,3 +1,4 @@
+import asyncio
 import os
 import random
 from math import ceil
@@ -10,6 +11,7 @@ from entities.abouts import AboutDto
 from entities.levels import LevelDto
 from entities.members import MemberDto
 
+AFK_VOICE_CHANNEL      = int(os.getenv('afk_channel_id'))
 
 class Commands(Cog):
     def __init__(self, bot):
@@ -113,26 +115,67 @@ class Commands(Cog):
             await ctx.send('You must be in the same voice channel as the member you want to kick!')
             return
 
-        voice_channel = ctx.author.voice.channel
-        members_id    = []
-        members_found = voice_channel.members
+        votes_received = 0
+        voice_channel  = ctx.author.voice.channel
+        members_found  = voice_channel.members
+
+        members_id = []
         for member_found in members_found:
             members_id.append(member_found.id)
-        if member.id in members_id:
-            votes_needed = ceil(0.4 * len(members_id))
-            reactions = ['✅', '❌']
-            embed     = Embed(
-                title=f'Kick {member.display_name}',
-                description=f'Votes needed: {votes_needed + 1}'
-            )
-            embed.set_thumbnail(url=member.avatar_url)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed.set_footer(text=f'Jail Inmate Number: {member.id}')
-            react = await ctx.send(embed=embed)
-            for reaction in reactions:
-                await react.add_reaction(reaction)
-        else:
+
+        if member.id not in members_id:
             await ctx.send('You must be in the same voice channel as the member you want to kick!')
+            return
+
+        votes_needed = ceil(0.4 * len(members_id))
+        embed        = Embed(
+            title=f'Kick {member.display_name}',
+            description=f'Votes needed: {votes_needed + 1}'
+        )
+        embed.set_thumbnail(url=member.avatar_url)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        react = await ctx.send(embed=embed)
+        for reaction in ['✅']:
+            await react.add_reaction(reaction)
+
+        try:
+            while votes_received < votes_needed + 1:
+                reaction, user = await self.bot.wait_for('reaction_add', timeout=10, check=check_vote)
+                if str(reaction) == '✅':
+                    votes_received += 1
+                    print(votes_received)
+                    print(votes_needed)
+            if votes_received >= votes_needed + 1:
+                await react.clear_reactions()
+                for reaction in ['❌']:
+                    await react.add_reaction(reaction)
+                await ctx.send(f'{member.mention} the kick proposal has passed. If you are active please react!')
+                try:
+                    def check_present(reaction, user):
+                        return user == member and str(reaction.emoji) in ['✅', '❌']
+                    reaction, user = await self.bot.wait_for('reaction_add', timeout=10, check=check_present)
+                    if str(reaction) == '❌':
+                        embed.add_field(name=f'{member.display_name}', value='Is still here', inline=True)
+                        await react.edit(embed=embed)
+                        await react.clear_reactions()
+                except asyncio.TimeoutError:
+                    afk_channel = self.bot.get_channel(AFK_VOICE_CHANNEL)
+                    guild_member = self.bot.guild.get_member(member.id)
+                    if guild_member.voice is None:
+                        await react.clear_reactions()
+                        return
+                    await guild_member.edit(voice_channel=afk_channel)
+                    embed.add_field(name=f'{member.display_name}', value='Has been send to afk channel', inline=True)
+                    await react.edit(embed=embed)
+                    await react.clear_reactions()
+        except asyncio.TimeoutError:
+            embed.add_field(name=f'{member.display_name}', value='Kick vote did not passed', inline=True)
+            await react.edit(embed=embed)
+            await react.clear_reactions()
+
+
+def check_vote(reaction, user):
+    return str(reaction.emoji) in ['✅', '❌']
 
 
 def setup(bot):

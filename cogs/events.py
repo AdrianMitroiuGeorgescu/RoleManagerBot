@@ -137,11 +137,6 @@ class Events(Cog):
                 await message.clear_reactions()
                 return
 
-            if len(message.embeds) > 0:
-                for embed in message.embeds:
-                    if 'Kick' in embed.title:
-                        await self.check_kick_command(embed=embed, message=message, payload=payload)
-
     @Cog.listener()
     async def on_raw_reaction_remove(self, payload):
         user = self.bot.get_user(payload.user_id)
