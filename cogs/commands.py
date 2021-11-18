@@ -139,13 +139,13 @@ class Commands(Cog):
             await react.add_reaction(reaction)
 
         try:
-            while votes_received < votes_needed + 1:
+            while votes_received < votes_needed:
                 reaction, user = await self.bot.wait_for('reaction_add', timeout=10, check=check_vote)
                 if str(reaction) == '✅':
                     votes_received += 1
                     print(votes_received)
                     print(votes_needed)
-            if votes_received >= votes_needed + 1:
+            if votes_received >= votes_needed:
                 await react.clear_reactions()
                 for reaction in ['❌']:
                     await react.add_reaction(reaction)
